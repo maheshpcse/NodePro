@@ -1,6 +1,7 @@
 const express = require('express');
 var router = express.Router();
 var userCtrl = require('../controllers/user-controller.js');
+var taskCtrl = require('../controllers/task-controller.js');
 
 router.get('/', (req, res) => {
     console.log("API works!");
@@ -13,6 +14,10 @@ router.get('/', (req, res) => {
 
 router.get('/users', userCtrl.getUsers);
 
-router.get('/tasks', userCtrl.getTasks);
+router.post('/adduser', userCtrl.addUser);
+
+router.delete('/deleteuser', userCtrl.deleteUser);
+
+router.get('/tasks', taskCtrl.getTasks);
 
 module.exports = router;
