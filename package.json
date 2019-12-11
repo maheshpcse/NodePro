@@ -1,0 +1,61 @@
+{
+  "name": "nodepro",
+  "version": "1.0.0",
+  "description": "A Simple node server with mysql database connection",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "knex migrate:latest --knexfile=./src/config/knex.js",
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "keywords": [
+    "Akrivia"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact",
+    "onCommand:npm-intellisense.import"
+  ],
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "npm-intellisense",
+      "properties": {
+        "npm-intellisense.scanDevDependencies": true,
+        "npm-intellisense.recursivePackageJsonLookup": true,
+        "npm-intellisense.packageSubfoldersIntellisense": true,
+        "npm-intellisense.showBuildInLibs": true,
+        "npm-intellisense.importES6": false,
+        "npm-intellisense.importQuotes": "'",
+        "npm-intellisense.importLinebreak": ";\r\n",
+        "npm-intellisense.importDeclarationType": "const"
+      }
+    },
+    "commands": [
+      {
+        "command": "npm-intellisense.import",
+        "title": "NPM Intellisense: Import module"
+      }
+    ]
+  },
+  "author": "Mahesh P",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dateformat": "^3.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "flatted": "^2.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.20.4",
+    "knex-db-manager": "^0.5.0",
+    "mysql": "^2.17.1",
+    "objection": "^1.6.11",
+    "path": "^0.12.7"
+  }
+}
