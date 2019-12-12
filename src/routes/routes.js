@@ -12,12 +12,14 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/users', userCtrl.getUsers);
+router.get('/getUsers', userCtrl.getUsers);
 
-router.post('/adduser', userCtrl.addUser);
+router.post('/addUser', userCtrl.addUser);
 
-router.delete('/deleteuser', userCtrl.deleteUser);
+router.put('/updateUser', userCtrl.updateUser);
 
-router.get('/tasks', taskCtrl.getTasks);
+router.delete('/deleteUser', userCtrl.deleteUser);
+
+router.get('/getTasks', taskCtrl.getTasks);
 
 module.exports = router;

@@ -31,6 +31,25 @@ module.exports.addUser = (req, res, next) => {
     })
 }
 
+module.exports.updateUser = (req, res, next) => {
+
+    userquery.updateTable('users', {
+        'user_id': req.body.id
+    }, {
+        'email': req.body.email,
+        'password': req.body.password
+    }, 'user_id', 'email', 'password').then(resp => {
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Data updated successfully',
+            data: resp
+        });
+    }).catch(err => {
+        res.status(200).send(err);
+    })
+}
+
 module.exports.deleteUser = (req, res, next) => {
 
     userquery.deleteTable('users', 'user_id', req.body.id).then(resp => {
