@@ -2,6 +2,8 @@ const express = require('express');
 var router = express.Router();
 var userCtrl = require('../controllers/user-controller.js');
 var taskCtrl = require('../controllers/task-controller.js');
+var connection = require('../config/db.js');
+var knex = require('../config/knex.js');
 
 router.get('/', (req, res) => {
     console.log("API works!");
@@ -21,5 +23,30 @@ router.put('/updateUser', userCtrl.updateUser);
 router.delete('/deleteUser', userCtrl.deleteUser);
 
 router.get('/getTasks', taskCtrl.getTasks);
+
+router.get('/sp', (req, res, next) => {
+    // connection.connect();
+    // connection.query(`CREATE PROCEDURE test(id int)
+    // BEGIN
+    // SELECT * FROM student where user_id = 2 ;
+    // END;`, function (err, result, fields) {
+    //     if (err) {
+    //         console.log("error:", err);
+    //         res.status(400).send(err);
+    //     } else {
+    //         console.dir(result, {depth: null})
+    //         res.status(200).json(result);
+    //     }
+    // });
+    // connection.end();
+
+    knex.knex.raw(`CREATE PROCEDURE test_sp(id int)
+    BEGIN
+    SELECT * FROM users where user_id = 2 ;
+    END;`).then(function (result) {
+        console.dir(result, {depth: null});
+        res.status(200).json(result);
+    });
+})
 
 module.exports = router;

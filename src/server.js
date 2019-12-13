@@ -1,6 +1,6 @@
 'use strict';
 // Required modules
-require('events').EventEmitter.defaultMaxListeners = 200;
+// require('events').EventEmitter.defaultMaxListeners = 200;
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
