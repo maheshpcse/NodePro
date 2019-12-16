@@ -49,4 +49,21 @@ router.get('/sp', (req, res, next) => {
     });
 })
 
+
+router.get('/getAllData', userCtrl.getAllData)
+
+router.get('/getUserorTaskData', userCtrl.getUserorTaskData)
+
+router.get('/getUserandTaskData', userCtrl.getUserandTaskData)
+
+router.get('/getUserData', userCtrl.getUserData)
+
+router.get('/getTaskData', userCtrl.getTaskData)
+
+router.get('/getDetails', userCtrl.getDetails)
+
+router.get('/getHavingData', userCtrl.getHavingData)
+
+router.post('/postData', userCtrl.addDataTransaction)
+
 module.exports = router;
