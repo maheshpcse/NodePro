@@ -6,10 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "knex migrate:latest --knexfile=./src/config/knex.js",
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "migrate": "knex migrate:latest --knexfile=./src/config/knex.js"
   },
   "keywords": [
     "Akrivia"
