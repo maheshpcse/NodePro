@@ -4,7 +4,7 @@ exports.up = function (knex, Promise) {
         table.string('title', 100).notNullable();
         table.string('description', 100).notNullable();
         table.boolean('is_complete').notNullable().defaultTo(false);
-        table.integer('user_id', 100).references('user_id').inTable('users');
+        table.integer('user_id', 100);
         table.timestamp('created_at').defaultTo(knex.fn.now());
         table.timestamp('updated_at').defaultTo(knex.fn.now());
     })
