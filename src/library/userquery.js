@@ -153,31 +153,22 @@ let havingTable = function (tableName, groupByColumn, orderByColumn, columnValue
 
 
 // Transacting Methods
-let transactingTable = function (tableName, data) {
-    let mod = '';
-    return new Promise((resolve, reject) => {
-        (async () => {
-            const result = await transactionData(id, trxData);
-            console.log(result);
-            mod = knex.knex.transaction((trx) => {
-                return knex.knex(tableName).transacting(trx).insert(data).then((resp) => {
-                        var id = resp[0];
-                        return transactionData(id, trx);
-                    })
-                    .then(trx.commit)
-                    .catch(trx.rollback);
-            }).then((resp) => {
-                console.log('Transaction complete.');
-            }).catch((err) => {
-                console.error(err);
-            })
-        })
-        mod.then(result => {
-            resolve(result);
-        }).catch(error => {
-            reject(error);
-        })
-    })
+let transactingTable = function (tableName1, tableName2, data) {
+    return (async () => {
+        // await transactionData(trxData, id)
+        knex.knex.transaction((trx) => {
+            knex.knex(tableName1).transacting(trx).insert(data).then((resp) => {
+                var id = resp[0];
+                console.log("response:", id);
+                console.log("trx:", trx);
+                // return transactionData(trx, id);
+            }).then(trx.commit).catch(trx.rollback);
+        }).then((resp) => {
+            console.log('Transaction complete.');
+        }).catch((err) => {
+            console.error('Transaction error.', err);
+        });
+    })();
 }
 
 // let startTransactingTable = function (tableName, data) {

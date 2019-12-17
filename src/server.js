@@ -6,9 +6,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const endpoints = require('./routes/routes.js');
 const config = require('./config/config.js');
-const Knexx = require('./config/knexConfig.js');
+const Knexx = require('./config/knex.js');
 const { Model } = require('objection');
-Model.knex(Knexx);
+Model.knex(Knexx.knex);
 var app = express();
 
 // Middleware functions
