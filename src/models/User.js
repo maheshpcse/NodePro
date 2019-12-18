@@ -13,9 +13,12 @@ class User extends Model {
         return {
             type: 'object',
             properties: {
-                user_id: { tyep: 'integer' },
+                user_id: { type: 'integer' },
+                username: { type: 'string' },
                 email: { type: 'string' },
-                password: {type: 'string' },
+                password: { type: 'string' },
+                phonenumber: { type: 'string' },
+                role: { type: 'string' },
                 created_at: { type: 'timestamp' },
                 updated_at: { type: 'timestamp' }
             }
