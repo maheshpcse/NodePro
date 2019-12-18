@@ -6,5 +6,5 @@ exports.up = function (knex, Promise) {
 };
 
 exports.down = function (knex, Promise) {
-    return knex.schema.raw(`drop procedure if exists test_user;`)
+    return knex.schema.raw(`DROP PROCEDURE IF EXISTS test_user;`)
 };

@@ -14,15 +14,28 @@ let insertTable = function (tableName, data) {
     })
 }
 
-let simpleselect = function (tableName, columns, whereCond, orderBy) {
+let insertRawTable = function (Model, data) {
+    const que = Model.query().insert(data).toString();
+    return Model.raw(que);
+}
+
+let simpleselect = function (tableName, columns, whereCond) {
     return new Promise((resolve, reject) => {
         let mod = knex.knex.select(columns).from(tableName);
         if (whereCond) {
             mod = mod.whereRaw(whereCond);
         }
-        if (orderBy) {
-            mod = mod.orderByRaw(orderBy);
-        }
+        mod.then(result => {
+            resolve(result);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+let commonSelectTable = function (data) {
+    return new Promise((resolve, reject) => {
+        let mod = knex.knex.raw(data);
         mod.then(result => {
             resolve(result);
         }).catch(error => {
@@ -196,7 +209,9 @@ let transactingTable = function (tableName1, tableName2, data) {
 
 module.exports = {
     insertTable,
+    insertRawTable,
     simpleselect,
+    commonSelectTable,
     updateTable,
     deleteTable,
     joinTwoTables,

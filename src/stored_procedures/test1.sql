@@ -1,28 +1,35 @@
-CREATE PROCEDURE IF NOT EXISTS `test_user`(IN `id` INT(100)) NOT DETERMINISTIC NO SQL SQL SECURITY DEFINER 
+CREATE PROCEDURE IF NOT EXISTS `test_user`(IN `id` INT(100), IN `dates` DATE)
 
 
-BEGIN 
+BEGIN
 
 
-CREATE TEMPORARY TABLE IF NOT EXISTS users(
-    `userid` INT(100) NOT NULL,
-    `name` VARCHAR(50) NOT NULL, 
-    `age` INT(50) NOT NULL 
-) ENGINE=memory;
+    set @tddate = dates;
 
 
-ALTER TABLE `users`
-    ADD PRIMARY KEY (`userid`)
+    CREATE TEMPORARY TABLE IF NOT EXISTS `temp_users`(
+        `id` INT(11) UNSIGNED NOT NULL,
+        `user_id` INT(100) NOT NULL,
+        `email` VARCHAR(50) NOT NULL, 
+        `password` VARCHAR(50) NOT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=memory;
 
 
-set @mquery = concat("insert into users (userid,name,age) values (1,'john',24)"); 
-PREPARE stat FROM @mquery; 
-EXECUTE stat; 
+    ALTER TABLE `temp_users` ADD INDEX (`id`);
+
+    ALTER TABLE `temp_users` ADD PRIMARY KEY (`user_id`);
 
 
-set @mquery1 = concat("select * from users"); 
-PREPARE stat FROM @mquery1; 
-EXECUTE stat; 
+    set @mquery = concat("insert into temp_users (email,password,created_at,updated_at) values ('','','",@tddate,"','",@tddate,"')"); 
+    PREPARE stat FROM @mquery; 
+    EXECUTE stat;
+
+
+    set @mquery1 = concat("select * from temp_users"); 
+    PREPARE stat FROM @mquery1; 
+    EXECUTE stat;
 
 
 END
