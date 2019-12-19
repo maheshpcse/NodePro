@@ -8,7 +8,7 @@ var users = require('../models/User.js');
 module.exports.userLogin = (req, res, next) => {
 
     console.log("request fields are:", req.body);
-    
+
     if (!req.body.username || !req.body.password) {
         return res.status(200).json({
             success: false,
@@ -22,13 +22,13 @@ module.exports.userLogin = (req, res, next) => {
 
     userquery.simpleselect('users', '*', wherecond).then(result => {
         console.log("response is:", result);
-        if(result == '' || result == null) {
+        if (result == '' || result == null || result == []) {
             console.log("Invalid username or password");
             return res.status(200).json({
                 success: false,
                 statusCode: 404,
                 message: 'Invalid username or password',
-                data: result
+                data: null
             });
         }
         console.log("Login successful");
@@ -55,4 +55,127 @@ module.exports.userLogin = (req, res, next) => {
             data: err
         });
     })
+}
+
+
+// user Signup API
+module.exports.userSignup = (req, res, next) => {
+
+    console.log("request fields are:", req.body);
+
+    let columndata = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        phonenumber: req.body.phonenumber,
+        role: req.body.role,
+        created_at: new Date(),
+        updated_at: new Date()
+    }
+
+    userquery.insertTable('users', columndata).then(resp => {
+        console.log("response is:", resp);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Signup successful',
+            data: resp
+        });
+        console.log("Signup successful");
+    }).catch(err => {
+        console.log("Signup failed", err);
+        res.status(500).send(err);
+    })
+}
+
+// checking valid Login API
+module.exports.validateLogin = (req, res, next) => {
+
+    let token = req.headers['x-access-token'] || req.headers['Authorization'];
+    if (token.startsWith('Bearer ')) {
+        token = token.slice(7, token.length);
+    }
+    if (token) {
+        jwt.verify(token, config.database.securitykey, (err, decoded) => {
+            if (err) {
+                return res.status(200).json({
+                    success: false,
+                    message: 'Token is not valid'
+                });
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else {
+        return res.status(200).json({
+            success: false,
+            message: 'Auth token is not supplied'
+        });
+    }
+}
+
+// checking valid User API
+module.exports.validateUser = (req, res, next) => {
+
+    userquery.simpleselect('users', 'user_id', `username = '${req.body.username}'`).then(resp => {
+        console.log("result is:", resp);
+        if (resp == '' || resp == []) {
+            console.log("Invalid username");
+            return res.status(200).json({
+                success: false,
+                statusCode: 404,
+                message: 'Invalid username',
+                data: null
+            });
+        }
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Valid username',
+            data: resp
+        });
+    }).catch(err => {
+        console.log("Error while validate username", err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while validate username',
+            data: err
+        });
+    })
+}
+
+// change Password API
+module.exports.changePassword = (req, res, next) => {
+
+    userquery.updateTable('users', {
+        'user_id': req.body.user_id
+    }, {
+        'password': req.body.password
+    }, 'user_id', 'password').then(resp => {
+        console.log("Password changed successful");
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Password changed successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log("Error while change password", err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while change password',
+            data: err
+        });
+    })
+}
+
+// upload Profile API
+module.exports.uploadProfile = (req, res, next) => {
+
+    res.status(200).json({
+        message: 'upload profile image'
+    });
 }

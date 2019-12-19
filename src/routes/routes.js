@@ -17,6 +17,14 @@ router.get('/', (req, res) => {
 
 router.post('/login', authCtrl.userLogin);
 
+router.post('/signup', authCtrl.userSignup);
+
+router.post('/validlogin', authCtrl.validateLogin);
+
+router.post('/validateuser', authCtrl.validateUser);
+
+router.post('/changepassword', authCtrl.changePassword);
+
 router.get('/getUsers', userCtrl.getUsers);
 
 router.post('/addUser', userCtrl.addUser);
