@@ -6,24 +6,31 @@ module.exports.getTasks = (req, res, next) => {
         await userquery.simpleselect('tasks', '*').then(async resp => {
 
             console.log("response is:", resp);
-    
+
             await userquery.simpleselect('users', '*').then(result => {
 
                 let tasksArr = [];
-
-                tasksArr.push(resp);
-
                 let arr = [];
-
+                for (let i = 0; i < result.length; i++) {
+                    arr.push(result[i].user_id);
+                }
                 for (let i = 0; i < resp.length; i++) {
-                    if(resp[i].user_id == result[i].user_id) {
-                        tasksArr.forEach((element, index)=>{
-                            element.username = result[index].username;
-                            arr.push(element);
-                        });
+                    if (arr.includes(resp[i].user_id) == true) {
+                        var pos = arr.indexOf(resp[i].user_id);
+                        console.log("position is:", pos);
+                        console.log("username is:", result[pos].username);
+                        let obj = {
+                            title: resp[i].title,
+                            description: resp[i].description,
+                            is_complete: resp[i].is_complete,
+                            user_id: resp[i].user_id,
+                            username: result[pos].username,
+                            created_at: resp[i].created_at,
+                            updated_at: resp[i].updated_at
+                        }
+                        tasksArr.push(obj);
                     }
                 }
-                tasksArr = arr;
                 console.log("tasks data is:", tasksArr);
                 res.status(200).json({
                     success: true,
