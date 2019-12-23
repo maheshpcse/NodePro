@@ -78,4 +78,6 @@ router.get('/sp', (req, res, next) => {
 
 router.get('/getTasks', taskCtrl.getTasks);
 
+router.post('/updateTask', taskCtrl.updateTask);
+
 module.exports = router;
