@@ -7,7 +7,9 @@ const bodyParser = require('body-parser');
 const endpoints = require('./routes/routes.js');
 const config = require('./config/config.js');
 const Knexx = require('./config/knex.js');
-const { Model } = require('objection');
+const {
+    Model
+} = require('objection');
 Model.knex(Knexx.knex);
 var app = express();
 
