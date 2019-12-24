@@ -1,8 +1,27 @@
 const dateFormat = require('dateformat');
 const jwt = require('jsonwebtoken');
+const SessionStorage = require('sessionstorage');
+const multer = require('multer');
 var userquery = require('../library/userquery.js');
 var config = require('../config/config.js');
 var users = require('../models/User.js');
+var tasks = require('../models/Task.js');
+
+// -> Multer Upload Storage
+const storage = multer.diskStorage({
+    // 
+    destination: (req, file, cb) => {
+        cb(null, __dirname + `${config.file_upload_path.directory}`)
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname)
+    }
+});
+
+const upload = multer({
+    storage: storage
+}).single('file');
+
 
 // user Login API
 module.exports.userLogin = (req, res, next) => {
@@ -21,7 +40,7 @@ module.exports.userLogin = (req, res, next) => {
     let wherecond = `username='${req.body.username}' AND password='${req.body.password}'`;
 
     userquery.simpleselect('users', '*', wherecond).then(result => {
-        console.log("response is:", result);
+        // console.log("response is:", result);
         if (result == '' || result == null || result == []) {
             console.log("Invalid username or password");
             return res.status(200).json({
@@ -35,8 +54,10 @@ module.exports.userLogin = (req, res, next) => {
         var token = jwt.sign({
             id: result[0].username
         }, config.database.securitykey, {
-            expiresIn: 3600
-        })
+            expiresIn: '24h'
+        });
+        console.log("token is:", token);
+        SessionStorage.setItem('token', token);
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -56,7 +77,6 @@ module.exports.userLogin = (req, res, next) => {
         });
     })
 }
-
 
 // user Signup API
 module.exports.userSignup = (req, res, next) => {
@@ -91,7 +111,10 @@ module.exports.userSignup = (req, res, next) => {
 // checking valid Login API
 module.exports.validateLogin = (req, res, next) => {
 
-    let token = req.headers['x-access-token'] || req.headers['Authorization'];
+    // let token = SessionStorage.getItem('token');
+    let token = req.headers['x-access-token'];
+    console.log("token is:", token);
+
     if (token.startsWith('Bearer ')) {
         token = token.slice(7, token.length);
     }
@@ -175,7 +198,31 @@ module.exports.changePassword = (req, res, next) => {
 // upload Profile API
 module.exports.uploadProfile = (req, res, next) => {
 
-    res.status(200).json({
-        message: 'upload profile image'
-    });
+    upload(req, res, (err, result) => {
+        if (err) {
+            console.log("Error while file receiving", err);
+        } else if (!req.file.path) {
+            console.log("No file received");
+        } else {
+            var profilePath = req.file.path;
+            var user_id = req.body.id;
+            console.log("user id is:", user_id);
+            userquery.updateTable('users', {
+                'user_id': user_id
+            }, {
+                'profilePath': profilePath
+            }, 'user_id', 'profilePath').then(resp => {
+                console.log('Profile upload successful');
+                res.status(200).json({
+                    success: true,
+                    statusCode: 200,
+                    message: 'Profile upload successful',
+                    data: resp
+                });
+            }).catch(err => {
+                console.log("Error while file upload", err);
+                res.status(200).send(err);
+            })
+        }
+    })
 }

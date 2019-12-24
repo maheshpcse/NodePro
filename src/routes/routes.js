@@ -25,7 +25,11 @@ router.post('/validateuser', authCtrl.validateUser);
 
 router.post('/changepassword', authCtrl.changePassword);
 
-router.get('/getUsers', userCtrl.getUsers);
+router.post('/uploadProfile', authCtrl.uploadProfile);
+
+router.get('/getUsers', authCtrl.validateLogin, authCtrl.validateLogin, userCtrl.getUsers);
+
+router.post('/getuserprofile', userCtrl.getOneUserById);
 
 router.post('/addUser', userCtrl.addUser);
 
@@ -78,6 +82,12 @@ router.get('/sp', (req, res, next) => {
 
 router.get('/getTasks', taskCtrl.getTasks);
 
-router.post('/updateTask', taskCtrl.updateTask);
+// router.get('/getTasks', taskCtrl.getTasksByJoin);
+
+router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
+
+router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
+
+router.delete('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
 
 module.exports = router;

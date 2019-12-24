@@ -8,7 +8,23 @@ module.exports.getUsers = (req, res, next) => {
         res.status(200).json({
             success: true,
             statusCode: 200,
-            message: 'Date read successfully',
+            message: 'User data read successfully',
+            data: resp
+        });
+    }).catch(err => {
+        res.status(200).send(err);
+    })
+}
+
+module.exports.getOneUserById = (req, res, next) => {
+
+    // console.log("request is", req.body);
+    
+    userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'User data read successfully',
             data: resp
         });
     }).catch(err => {
@@ -19,8 +35,8 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.addUser = (req, res, next) => {
 
     userquery.insertTable('users', {
-        email: req.body.email,
-        password: req.body.password
+        'email': req.body.email,
+        'password': req.body.password
     }).then(resp => {
         res.status(200).json({
             success: true,
@@ -173,7 +189,7 @@ module.exports.getHavingData = (req, res, next) => {
 
 // Transactiing Operation API's
 module.exports.addDataTransaction = (req, res, next) => {
-    
+
     userquery.transactingTable('users', {
         email: req.body.email,
         password: req.body.password,

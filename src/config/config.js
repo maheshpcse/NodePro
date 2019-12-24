@@ -11,5 +11,8 @@ module.exports = {
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         securitykey: process.env.SECURITY_KEY
+    },
+    file_upload_path: {
+        directory: '../../../public/profiles/'
     }
 }
