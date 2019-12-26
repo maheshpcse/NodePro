@@ -88,6 +88,6 @@ router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
 
 router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 
-router.delete('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
+router.post('/deleteTask', taskCtrl.deleteTask);
 
 module.exports = router;

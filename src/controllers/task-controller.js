@@ -117,6 +117,8 @@ module.exports.updateTask = (req, res, next) => {
 
 module.exports.deleteTask = (req, res, next) => {
 
+    console.log("request body is:", req.body);
+
     userquery.deleteTable('tasks', 'task_id', req.body.task_id).then(resp => {
         console.log("Task deleted successful");
         res.status(200).json({
