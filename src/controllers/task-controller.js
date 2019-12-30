@@ -1,4 +1,5 @@
 const userquery = require('../library/userquery.js');
+const Tasks = require('../models/Task.js');
 
 module.exports.getTasks = (req, res, next) => {
 
@@ -62,7 +63,23 @@ module.exports.getTasksByJoin = (req, res, next) => {
     })
 }
 
+module.exports.getTaskById = (req, res, next) => {
+
+    userquery.simpleselect('tasks', '*', `task_id=${req.body.task_id}`).then(resp => {
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Task By Id read successful',
+            data: resp
+        });
+    }).catch(err => {
+        res.status(200).send(err);
+    })
+}
+
 module.exports.addTask = (req, res, next) => {
+
+    console.log("request is", req.body, typeof (req.body));
 
     let columndata = {
         'title': req.body.title,
@@ -72,6 +89,7 @@ module.exports.addTask = (req, res, next) => {
         'created_at': new Date(),
         'updated_at': new Date()
     }
+
     userquery.insertTable('tasks', columndata).then(resp => {
         console.log("Task inserted successful");
         res.status(200).json({

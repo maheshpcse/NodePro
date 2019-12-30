@@ -1,5 +1,6 @@
 const userquery = require('../library/userquery.js');
 var User = require('../models/User.js');
+var notifications = require('../controllers/notifications-controller.js');
 
 // CRUD Operation API's
 module.exports.getUsers = (req, res, next) => {
@@ -19,7 +20,7 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getOneUserById = (req, res, next) => {
 
     // console.log("request is", req.body);
-    
+
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
         res.status(200).json({
             success: true,
@@ -35,8 +36,16 @@ module.exports.getOneUserById = (req, res, next) => {
 module.exports.addUser = (req, res, next) => {
 
     userquery.insertTable('users', {
+        'firstname': req.body.firstname,
+        'lastname': req.body.lastname,
+        'username': req.body.username,
         'email': req.body.email,
-        'password': req.body.password
+        'password': req.body.password,
+        'phonenumber': req.body.phonenumber,
+        'designation': req.body.designation,
+        'department': req.body.department,
+        'created_at': new Date(),
+        'updated_at': new Date()
     }).then(resp => {
         res.status(200).json({
             success: true,
@@ -54,9 +63,17 @@ module.exports.updateUser = (req, res, next) => {
     userquery.updateTable('users', {
         'user_id': req.body.id
     }, {
+        'firstname': req.body.firstname,
+        'lastname': req.body.lastname,
+        'username': req.body.username,
         'email': req.body.email,
-        'password': req.body.password
-    }, 'user_id', 'email', 'password').then(resp => {
+        'password': req.body.password,
+        'phonenumber': req.body.phonenumber,
+        'designation': req.body.designation,
+        'department': req.body.department,
+        'created_at': new Date(),
+        'updated_at': new Date()
+    }, 'user_id', 'firstname', 'lastname', 'username', 'email', 'password', 'phonenumber', 'designation', 'department', 'created_at', 'updated_at').then(resp => {
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -206,4 +223,52 @@ module.exports.addDataTransaction = (req, res, next) => {
         console.log("error:", err);
         res.status(200).send(err);
     })
+}
+
+// Send Message To User
+module.exports.sendNotification = (req, res, next) => {
+
+    console.log("request is:", req.body);
+
+    (async () => {
+        let notifyData = {
+            'notification': req.body.notification,
+            'type_of_notify': req.body.type_of_notify,
+            'module_name': req.body.module_name,
+            'sender_name': req.body.sender_name,
+            'receiver_name': req.body.receiver_name,
+            'status': req.body.status,
+            'user_id': req.body.user_id,
+            'created_at': new Date(),
+            'updated_at': new Date()
+        }
+        await userquery.insertTable('notifications', notifyData).then(async result => {
+
+            // res.status(200).json({
+            //     success: true,
+            //     statusCode: 200,
+            //     message: 'Notification sent successful',
+            //     data: result
+            // });
+
+            await userquery.simpleselect('notifications', '*').then(resp => {
+                res.status(200).json({
+                    success: true,
+                    statusCode: 200,
+                    message: 'Notification sent successful',
+                    data: resp
+                });
+            }).catch(err => {
+                res.status(200).send(err);
+            })
+
+        }).catch(err => {
+            res.status(200).json({
+                success: false,
+                statusCode: 500,
+                message: 'Erro while send notification',
+                data: err
+            });
+        })
+    })();
 }
