@@ -80,14 +80,18 @@ router.get('/sp', (req, res, next) => {
     });
 });
 
-router.get('/getTasks', taskCtrl.getTasks);
+router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasks);
 
-// router.get('/getTasks', taskCtrl.getTasksByJoin);
+// router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasksByJoin);
 
-router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
+router.get('/getTaskById', taskCtrl.getTaskById);
+
+router.post('/addTask', taskCtrl.addTask);
 
 router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 
 router.post('/deleteTask', taskCtrl.deleteTask);
+
+router.post('/sendnotification', userCtrl.sendNotification);
 
 module.exports = router;

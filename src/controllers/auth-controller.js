@@ -112,8 +112,8 @@ module.exports.userSignup = (req, res, next) => {
 module.exports.validateLogin = (req, res, next) => {
 
     // let token = SessionStorage.getItem('token');
-    let token = req.headers['x-access-token'];
-    console.log("token is:", token);
+    let token = req.headers['x-access-token'] || req.headers['authorization'];
+    // console.log("token is:", token);
 
     if (token.startsWith('Bearer ')) {
         token = token.slice(7, token.length);
@@ -138,7 +138,7 @@ module.exports.validateLogin = (req, res, next) => {
     }
 }
 
-// checking valid User API
+// checking validate User For Change Password API
 module.exports.validateUser = (req, res, next) => {
 
     userquery.simpleselect('users', 'user_id', `username = '${req.body.username}'`).then(resp => {
