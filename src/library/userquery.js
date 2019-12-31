@@ -1,6 +1,14 @@
-const objection = require('objection');
+require('dotenv').config();
 const Promise = require('bluebird');
 const knex = require('../config/knex.js');
+const CryptoJS = require('crypto-js');
+const {
+    raw,
+    objection,
+    ref,
+    lit
+} = require('objection');
+const request = require('request');
 
 // CRUD Operation Methods
 let insertTable = function (tableName, data) {
@@ -15,8 +23,41 @@ let insertTable = function (tableName, data) {
 }
 
 let insertRawTable = function (Model, data) {
-    const que = Model.query().insert(data).toString();
+    return new Promise((resolve, reject) => {
+        let que = Model.query().insert(data).toString();
+        let mod = Model.raw(que);
+        mod.then(result => {
+            resolve(result);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+let insertOrUpdate = async (Model, data) => {
+    const firstData = data[0] ? data[0] : data;
+    const insertQuery = await Model.query().insert(data).toString()
+    const onConflict = await Object.getOwnPropertyNames(firstData).map(c => c === Model.idColumn ? ',' : `${c} = VALUES(${c})`).join(',').replace(',,', '')
+    const que = await `${insertQuery} ON DUPLICATE KEY UPDATE ${onConflict}`
+    // console.log('que', que.toString())
     return Model.raw(que);
+}
+
+let insertOrUpdateWithRequest = async (request, Model, data) => {
+    const firstData = data[0] ? data[0] : data
+    const insertQuery = await Model.query(request.knex)
+        .insert(data)
+        .toString()
+    const onConflict = await Object.getOwnPropertyNames(firstData)
+        .map(c => (c === Model.idColumn ? ',' : `${c} = VALUES(${c})`))
+        .join(',')
+        .replace(',,', '')
+    const que = await `${insertQuery.replace(
+      /\?/g,
+      '\\?'
+    )} ON DUPLICATE KEY UPDATE ${onConflict}`
+    console.log('que in  insertOrUpdate', que.toString());
+    return request.knex.raw(que);
 }
 
 let simpleselect = function (tableName, columns, whereCond) {
@@ -210,6 +251,8 @@ let transactingTable = function (tableName1, tableName2, data) {
 module.exports = {
     insertTable,
     insertRawTable,
+    insertOrUpdate,
+    insertOrUpdateWithRequest,
     simpleselect,
     commonSelectTable,
     updateTable,

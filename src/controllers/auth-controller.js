@@ -169,8 +169,8 @@ module.exports.validateUser = (req, res, next) => {
     })
 }
 
-// change Password API
-module.exports.changePassword = (req, res, next) => {
+// Forgot Password API
+module.exports.forgotPassword = (req, res, next) => {
 
     userquery.updateTable('users', {
         'user_id': req.body.user_id
@@ -190,6 +190,41 @@ module.exports.changePassword = (req, res, next) => {
             success: false,
             statusCode: 500,
             message: 'Error while change password',
+            data: err
+        });
+    })
+}
+
+// Change Password API
+module.exports.changePassword = (req, res, next) => {
+
+    let columndata = {
+        user_id: req.body.user_id,
+        password: req.body.password
+    }
+    userquery.insertOrUpdate(users, columndata).then(resp => {
+        if (resp == '' || resp == []) {
+            console.log("Invalid username or pasword");
+            return res.status(200).json({
+                success: false,
+                statusCode: 404,
+                message: 'Invalid username or password',
+                data: null
+            });
+        }
+        console.log("Password updated successful");
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Password updated successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log("Error while changing password", err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while changing password',
             data: err
         });
     })

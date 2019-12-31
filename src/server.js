@@ -72,6 +72,7 @@ var result = _.chain(lyrics)
 // Middleware functions
 app.use(express.static(path.join(__dirname + 'public')));
 app.use(function (req, res, next) {
+    res.header('Content-Type', 'application/json');
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE,PATCH, OPTIONS");
@@ -81,8 +82,13 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(bodyParser.json());
-app.use(bodyParser.raw());
+app.use(bodyParser.json({
+    extended: true
+}));
+app.use(bodyParser.raw({
+    inflate: false,
+    extended: true
+}));
 
 // Routes
 app.use('/api', endpoints);

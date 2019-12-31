@@ -244,12 +244,7 @@ module.exports.sendNotification = (req, res, next) => {
         }
         await userquery.insertTable('notifications', notifyData).then(async result => {
 
-            // res.status(200).json({
-            //     success: true,
-            //     statusCode: 200,
-            //     message: 'Notification sent successful',
-            //     data: result
-            // });
+            console.log("notification result is:", result);
 
             await userquery.simpleselect('notifications', '*').then(resp => {
                 res.status(200).json({

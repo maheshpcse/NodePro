@@ -1,5 +1,5 @@
 const userquery = require('../library/userquery.js');
-const Tasks = require('../models/Task.js');
+var tasks = require('../models/Task.js');
 
 module.exports.getTasks = (req, res, next) => {
 
@@ -79,18 +79,18 @@ module.exports.getTaskById = (req, res, next) => {
 
 module.exports.addTask = (req, res, next) => {
 
-    console.log("request is", req.body, typeof (req.body));
+    console.log("request body is", req.body);
+    
+    // let columndata = {
+    //     'title': req.body.title,
+    //     'description': req.body.description,
+    //     'is_complete': req.body.is_complete,
+    //     'user_id': req.body.user_id,
+    //     'created_at': new Date(),
+    //     'updated_at': new Date()
+    // }
 
-    let columndata = {
-        'title': req.body.title,
-        'description': req.body.description,
-        'is_complete': req.body.is_complete,
-        'user_id': req.body.user_id,
-        'created_at': new Date(),
-        'updated_at': new Date()
-    }
-
-    userquery.insertTable('tasks', columndata).then(resp => {
+    userquery.insertTable('tasks', req.body).then(resp => {
         console.log("Task inserted successful");
         res.status(200).json({
             success: true,

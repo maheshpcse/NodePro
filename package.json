@@ -45,6 +45,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
+    "crypto-js": "^3.1.9-1",
     "dateformat": "^3.0.3",
     "dotenv": "^8.2.0",
     "events": "^3.0.0",
@@ -58,6 +59,7 @@
     "nodemon": "^2.0.2",
     "objection": "^1.6.11",
     "path": "^0.12.7",
+    "request": "^2.88.0",
     "sessionstorage": "^0.1.0",
     "underscore": "^1.9.1"
   }

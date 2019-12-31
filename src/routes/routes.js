@@ -19,39 +19,39 @@ router.post('/login', authCtrl.userLogin);
 
 router.post('/signup', authCtrl.userSignup);
 
-router.post('/validlogin');
-
 router.post('/validateuser', authCtrl.validateUser);
+
+router.post('/forgotpassword', authCtrl.forgotPassword);
 
 router.post('/changepassword', authCtrl.changePassword);
 
 router.post('/uploadProfile', authCtrl.uploadProfile);
 
-router.get('/getUsers', userCtrl.getUsers);
+router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
 
-router.post('/getuserprofile', userCtrl.getOneUserById);
+router.post('/getuserprofile', authCtrl.validateLogin, userCtrl.getOneUserById);
 
-router.post('/addUser', userCtrl.addUser);
+router.post('/addUser', authCtrl.validateLogin, userCtrl.addUser);
 
-router.put('/updateUser', userCtrl.updateUser);
+router.put('/updateUser', authCtrl.validateLogin, userCtrl.updateUser);
 
-router.delete('/deleteUser', userCtrl.deleteUser);
+router.delete('/deleteUser', authCtrl.validateLogin, userCtrl.deleteUser);
 
-router.get('/getAllData', userCtrl.getAllData);
+router.get('/getAllData', authCtrl.validateLogin, userCtrl.getAllData);
 
-router.get('/getUserorTaskData', userCtrl.getUserorTaskData);
+router.get('/getUserorTaskData', authCtrl.validateLogin, userCtrl.getUserorTaskData);
 
-router.get('/getUserandTaskData', userCtrl.getUserandTaskData);
+router.get('/getUserandTaskData', authCtrl.validateLogin, userCtrl.getUserandTaskData);
 
-router.get('/getUserData', userCtrl.getUserData);
+router.get('/getUserData', authCtrl.validateLogin, userCtrl.getUserData);
 
-router.get('/getTaskData', userCtrl.getTaskData);
+router.get('/getTaskData', authCtrl.validateLogin, userCtrl.getTaskData);
 
-router.get('/getDetails', userCtrl.getDetails);
+router.get('/getDetails', authCtrl.validateLogin, userCtrl.getDetails);
 
-router.get('/getHavingData', userCtrl.getHavingData);
+router.get('/getHavingData', authCtrl.validateLogin, userCtrl.getHavingData);
 
-router.post('/postData', userCtrl.addDataTransaction);
+router.post('/postData', authCtrl.validateLogin, userCtrl.addDataTransaction);
 
 router.get('/sp', (req, res, next) => {
     // connection.connect();
@@ -80,18 +80,18 @@ router.get('/sp', (req, res, next) => {
     });
 });
 
-router.get('/getTasks', taskCtrl.getTasks);
+router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasks);
 
-// router.get('/getTasks', taskCtrl.getTasksByJoin);
+// router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasksByJoin);
 
-router.get('/getTaskById', taskCtrl.getTaskById);
+router.get('/getTaskById', authCtrl.validateLogin, taskCtrl.getTaskById);
 
-router.post('/addTask', taskCtrl.addTask);
+router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
 
-router.post('/updateTask', taskCtrl.updateTask);
+router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 
-router.post('/deleteTask', taskCtrl.deleteTask);
+router.post('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
 
-router.post('/sendnotification', userCtrl.sendNotification);
+router.post('/sendnotification', authCtrl.validateLogin, userCtrl.sendNotification);
 
 module.exports = router;
