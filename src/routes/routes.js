@@ -19,7 +19,7 @@ router.post('/login', authCtrl.userLogin);
 
 router.post('/signup', authCtrl.userSignup);
 
-router.post('/validlogin', authCtrl.validateLogin);
+router.post('/validlogin');
 
 router.post('/validateuser', authCtrl.validateUser);
 
@@ -27,7 +27,7 @@ router.post('/changepassword', authCtrl.changePassword);
 
 router.post('/uploadProfile', authCtrl.uploadProfile);
 
-router.get('/getUsers', authCtrl.validateLogin, authCtrl.validateLogin, userCtrl.getUsers);
+router.get('/getUsers', userCtrl.getUsers);
 
 router.post('/getuserprofile', userCtrl.getOneUserById);
 
@@ -80,15 +80,15 @@ router.get('/sp', (req, res, next) => {
     });
 });
 
-router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasks);
+router.get('/getTasks', taskCtrl.getTasks);
 
-// router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasksByJoin);
+// router.get('/getTasks', taskCtrl.getTasksByJoin);
 
 router.get('/getTaskById', taskCtrl.getTaskById);
 
 router.post('/addTask', taskCtrl.addTask);
 
-router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
+router.post('/updateTask', taskCtrl.updateTask);
 
 router.post('/deleteTask', taskCtrl.deleteTask);
 

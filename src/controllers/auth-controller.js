@@ -113,7 +113,7 @@ module.exports.validateLogin = (req, res, next) => {
 
     // let token = SessionStorage.getItem('token');
     let token = req.headers['x-access-token'] || req.headers['authorization'];
-    // console.log("token is:", token);
+    console.log("token is:", token);
 
     if (token.startsWith('Bearer ')) {
         token = token.slice(7, token.length);
