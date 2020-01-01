@@ -80,7 +80,7 @@ module.exports.getTaskById = (req, res, next) => {
 module.exports.addTask = (req, res, next) => {
 
     console.log("request body is", req.body);
-    
+
     // let columndata = {
     //     'title': req.body.title,
     //     'description': req.body.description,
@@ -120,6 +120,22 @@ module.exports.updateTask = (req, res, next) => {
     userquery.updateTable('tasks', {
         'task_id': req.body.task_id
     }, columndata, 'task_id', 'title', 'description', 'is_complete', 'user_id', 'created_at', 'updated_at').then(resp => {
+        console.log('Task updated successful');
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Task updated successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log('Error while updating task', err);
+        res.status(200).send(err);
+    })
+}
+
+module.exports.updateTaskById = (req, res, next) => {
+
+    userquery.updateTableWithWhere('tasks', `task_id=${req.body.task_id}`, req.body).then(resp => {
         console.log('Task updated successful');
         res.status(200).json({
             success: true,

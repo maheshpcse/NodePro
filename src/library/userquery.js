@@ -96,6 +96,17 @@ let updateTable = function (tableName, whereCond, updateCond, whereColumn, updat
     })
 }
 
+let updateTableWithWhere = function (tableName, whereCond, updateColumn) {
+    return new Promise((resolve, reject) => {
+        let mod = knex.knex(tableName).whereRaw(whereCond).update(updateColumn);
+        mod.then(result => {
+            resolve(result);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 let deleteTable = function (tableName, columnName, columnValue) {
     return new Promise((resolve, reject) => {
         let mod = knex.knex(tableName).where(columnName, columnValue).del();
@@ -256,6 +267,7 @@ module.exports = {
     simpleselect,
     commonSelectTable,
     updateTable,
+    updateTableWithWhere,
     deleteTable,
     joinTwoTables,
     joinwithWhereTable,

@@ -90,6 +90,8 @@ router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
 
 router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 
+router.post('/updateTaskById', taskCtrl.updateTaskById);
+
 router.post('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
 
 router.post('/sendnotification', authCtrl.validateLogin, userCtrl.sendNotification);

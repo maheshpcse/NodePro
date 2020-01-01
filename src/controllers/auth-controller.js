@@ -6,6 +6,8 @@ var userquery = require('../library/userquery.js');
 var config = require('../config/config.js');
 var users = require('../models/User.js');
 var tasks = require('../models/Task.js');
+var FormData = require('form-data');
+var DIR = './src/uploads/';
 
 // -> Multer Upload Storage
 const storage = multer.diskStorage({
@@ -20,8 +22,51 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage
-}).single('file');
+}).single('avatar');
 
+
+// upload Profile API
+module.exports.uploadProfile = (req, res, next) => {
+
+    upload(req, res, (err, result) => {
+        console.log(req.body);
+        console.log(req.file);
+        if (err) {
+            console.log("Error while file receiving", err);
+            res.status(200).json({
+                success: false,
+                message: 'Erro while receiving file'
+            });
+        } else if (!req.file) {
+            console.log("No file received");
+            res.status(200).json({
+                success: false,
+                message: 'No file received'
+            });
+        } else {
+            var username = req.body.username;
+            var profilePath = req.file.filename;
+            console.log("user id is:", username);
+            console.log("profilePath is:", profilePath);
+            userquery.updateTable('users', {
+                'username': username
+            }, {
+                'profilePath': profilePath
+            }, 'user_id', 'profilePath').then(resp => {
+                console.log('Profile upload successful');
+                res.status(200).json({
+                    success: true,
+                    statusCode: 200,
+                    message: 'Profile upload successful',
+                    data: resp
+                });
+            }).catch(err => {
+                console.log("Error while file upload", err);
+                res.status(200).send(err);
+            })
+        }
+    })
+}
 
 // user Login API
 module.exports.userLogin = (req, res, next) => {
@@ -113,7 +158,7 @@ module.exports.validateLogin = (req, res, next) => {
 
     // let token = SessionStorage.getItem('token');
     let token = req.headers['x-access-token'] || req.headers['authorization'];
-    console.log("token is:", token);
+    // console.log("token is:", token);
 
     if (token.startsWith('Bearer ')) {
         token = token.slice(7, token.length);
@@ -227,37 +272,5 @@ module.exports.changePassword = (req, res, next) => {
             message: 'Error while changing password',
             data: err
         });
-    })
-}
-
-// upload Profile API
-module.exports.uploadProfile = (req, res, next) => {
-
-    upload(req, res, (err, result) => {
-        if (err) {
-            console.log("Error while file receiving", err);
-        } else if (!req.file.path) {
-            console.log("No file received");
-        } else {
-            var profilePath = req.file.path;
-            var user_id = req.body.id;
-            console.log("user id is:", user_id);
-            userquery.updateTable('users', {
-                'user_id': user_id
-            }, {
-                'profilePath': profilePath
-            }, 'user_id', 'profilePath').then(resp => {
-                console.log('Profile upload successful');
-                res.status(200).json({
-                    success: true,
-                    statusCode: 200,
-                    message: 'Profile upload successful',
-                    data: resp
-                });
-            }).catch(err => {
-                console.log("Error while file upload", err);
-                res.status(200).send(err);
-            })
-        }
     })
 }

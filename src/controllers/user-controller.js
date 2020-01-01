@@ -1,6 +1,8 @@
 const userquery = require('../library/userquery.js');
 var User = require('../models/User.js');
 var notifications = require('../controllers/notifications-controller.js');
+var config = require('../config/config.js');
+var DIR = './src/uploads/';
 
 // CRUD Operation API's
 module.exports.getUsers = (req, res, next) => {
@@ -22,6 +24,7 @@ module.exports.getOneUserById = (req, res, next) => {
     // console.log("request is", req.body);
 
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
+        resp[0].profilePath = `${config.file_upload_path.directory}` + `${resp[0].profilePath}`;
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -82,6 +85,27 @@ module.exports.updateUser = (req, res, next) => {
         });
     }).catch(err => {
         res.status(200).send(err);
+    })
+}
+
+module.exports.updateUserById = (req, res, next) => {
+
+    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id}`, req.body).then(resp => {
+        console.log("User details updated successful");
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'User details updated successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log("Error while updating user details");
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while updating user details',
+            data: err
+        });
     })
 }
 
