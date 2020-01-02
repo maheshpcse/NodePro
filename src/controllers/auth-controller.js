@@ -13,8 +13,8 @@ var DIR = './src/uploads/';
 const storage = multer.diskStorage({
     // 
     destination: (req, file, cb) => {
-        // cb(null, __dirname + `${config.file_upload_path.directory}`)
-        cb(null, DIR)
+        cb(null, __dirname + `${config.file_upload_path.directory}`)
+        // cb(null, __dirname + DIR)
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname)
@@ -30,7 +30,6 @@ const upload = multer({
 module.exports.uploadProfile = (req, res, next) => {
 
     upload(req, res, (err, result) => {
-        console.log(req.body);
         console.log(req.file);
         if (err) {
             console.log("Error while file receiving", err);
@@ -49,13 +48,14 @@ module.exports.uploadProfile = (req, res, next) => {
         } 
         else {
             var username = req.body.username;
-            var profilePath = req.file.filename;
+            var profileName = req.file.filename;
+            var profilePath = req.file.path;
             console.log("user id is:", username);
-            console.log("profilePath is:", profilePath);
+            console.log("profile name and path is:", profileName, profilePath);
             userquery.updateTable('users', {
                 'username': username
             }, {
-                'profilePath': profilePath
+                'profilePath': profileName
             }, 'user_id', 'profilePath').then(resp => {
                 console.log('Profile upload successful');
                 res.status(200).json({

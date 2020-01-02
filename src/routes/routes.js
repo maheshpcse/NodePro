@@ -29,7 +29,9 @@ router.post('/uploadProfile', authCtrl.uploadProfile);
 
 router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
 
-router.post('/getuserprofile', authCtrl.validateLogin, userCtrl.getOneUserById);
+// router.post('/getoneuser', userCtrl.getOneUserById);
+
+router.post('/getuserprofile', userCtrl.getUserProfile);
 
 router.post('/addUser', authCtrl.validateLogin, userCtrl.addUser);
 

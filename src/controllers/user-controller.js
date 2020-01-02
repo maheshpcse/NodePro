@@ -3,6 +3,8 @@ var User = require('../models/User.js');
 var notifications = require('../controllers/notifications-controller.js');
 var config = require('../config/config.js');
 var DIR = './src/uploads/';
+var fs = require('fs');
+var path = require('path');
 
 // CRUD Operation API's
 module.exports.getUsers = (req, res, next) => {
@@ -24,15 +26,42 @@ module.exports.getOneUserById = (req, res, next) => {
     // console.log("request is", req.body);
 
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
-        resp[0].profilePath = `${config.file_upload_path.directory}` + `${resp[0].profilePath}`;
+        let filename = `${resp[0].profilePath}`;
+        console.log("filename is:", filename);
         res.status(200).json({
             success: true,
             statusCode: 200,
             message: 'User data read successfully',
-            data: resp
+            data: resp,
+            file: filename
         });
     }).catch(err => {
         res.status(200).send(err);
+    })
+}
+
+module.exports.getUserProfile = (req, res, next) => {
+
+    // console.log("request is", req.body);
+
+    userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
+        let profile = path.join(__dirname + `../../../public/profiles/` + resp[0].profilePath);
+        console.log(profile);
+        var base64Image = fs.readFileSync(__dirname + `../../../public/profiles/file-1577968152704-a.PNG`);
+        console.log("base64image is:", base64Image);
+        var bitmapImage = new Buffer(base64Image).toString('base64');
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'User data read successfully',
+            data: resp,
+            file: bitmapImage
+        });
+    }).catch(err => {
+        console.log("error while getting user data:", err);
+        res.status(200).json({
+            data: err
+        });
     })
 }
 
