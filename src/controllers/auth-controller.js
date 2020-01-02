@@ -13,7 +13,8 @@ var DIR = './src/uploads/';
 const storage = multer.diskStorage({
     // 
     destination: (req, file, cb) => {
-        cb(null, __dirname + `${config.file_upload_path.directory}`)
+        // cb(null, __dirname + `${config.file_upload_path.directory}`)
+        cb(null, DIR)
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname)
@@ -22,7 +23,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage
-}).single('avatar');
+}).single('file');
 
 
 // upload Profile API
@@ -35,15 +36,18 @@ module.exports.uploadProfile = (req, res, next) => {
             console.log("Error while file receiving", err);
             res.status(200).json({
                 success: false,
-                message: 'Erro while receiving file'
+                message: 'Erro while receiving file',
+                data: err
             });
-        } else if (!req.file) {
+        } 
+        else if (!req.file) {
             console.log("No file received");
             res.status(200).json({
                 success: false,
                 message: 'No file received'
             });
-        } else {
+        } 
+        else {
             var username = req.body.username;
             var profilePath = req.file.filename;
             console.log("user id is:", username);
