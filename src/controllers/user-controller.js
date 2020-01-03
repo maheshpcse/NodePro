@@ -2,11 +2,11 @@ const userquery = require('../library/userquery.js');
 var User = require('../models/User.js');
 var notifications = require('../controllers/notifications-controller.js');
 var config = require('../config/config.js');
-var DIR = './src/uploads/';
+var DIR = './src/uploads';
 const fs = require('fs');
 const path = require('path');
 const image2base64 = require('image-to-base64');
-
+const base64 = require('node-base64-image');
 // CRUD Operation API's
 module.exports.getUsers = (req, res, next) => {
 
@@ -46,16 +46,31 @@ module.exports.getUserProfile = (req, res, next) => {
     // console.log("request is", req.body);
 
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
-        // var originalImage = fs.readFileSync(__dirname + `../../../public/profiles/${resp[0].profilePath}`);
+        // var originalImage = fs.readFileSync(__dirname + `../../../${DIR}/${resp[0].profilePath}`);
         // console.log("originalImage is:", originalImage);
         // var base64Image = new Buffer(originalImage).toString('base64');
         // console.log("base64Image is:", base64Image);
-        res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: 'User data read successfully',
-            data: resp
-            // file: base64Image
+        var base64Image;
+        var Imagepath = path.join(__dirname + `../../../${DIR}/${resp[0].profilePath}`);
+        console.log("Image path is:", Imagepath);
+        var options = {
+            string: true,
+            local: true
+        };
+        base64.encode(Imagepath, options, (err, image) => {
+            if (err) {
+                console.log("error converting base64 format", err);
+            } else {
+                base64Image = image;
+                // console.log("base64 Image is:", base64Image);
+                res.status(200).json({
+                    success: true,
+                    statusCode: 200,
+                    message: 'User data read successfully',
+                    data: resp,
+                    file: base64Image
+                });
+            }
         });
     }).catch(err => {
         console.log("error while getting user data:", err);

@@ -25,6 +25,9 @@ const upload = multer({
     storage: storage
 }).single('file');
 
+const multiUpload = multer({
+    storage: storage
+}).array('files');
 
 // upload Profile API
 module.exports.uploadProfile = (req, res, next) => {
@@ -35,27 +38,27 @@ module.exports.uploadProfile = (req, res, next) => {
             console.log("Error while file receiving", err);
             res.status(200).json({
                 success: false,
+                statusCode: 403,
                 message: 'Erro while receiving file',
                 data: err
             });
-        } 
-        else if (!req.file) {
+        } else if (!req.file) {
             console.log("No file received");
             res.status(200).json({
                 success: false,
+                statusCode: 404,
                 message: 'No file received'
             });
-        } 
-        else {
+        } else {
             var username = req.body.username;
             var profileName = req.file.filename;
-            var profilePath = "http://localhost:3333/" + req.file.path;
+            var profilePath = "http://192.168.2.146:3333/" + req.file.path;
             console.log("user id is:", username);
             console.log("profile name and path is:", profileName, profilePath);
             userquery.updateTable('users', {
                 'username': username
             }, {
-                'profilePath': profilePath
+                'profilePath': profileName
             }, 'user_id', 'profilePath').then(resp => {
                 console.log('Profile upload successful');
                 res.status(200).json({
@@ -65,9 +68,72 @@ module.exports.uploadProfile = (req, res, next) => {
                     data: resp
                 });
             }).catch(err => {
-                console.log("Error while file upload", err);
-                res.status(200).send(err);
+                console.log("Error while profile upload", err);
+                res.status(200).json({
+                    success: false,
+                    statusCode: 500,
+                    message: 'Error while profile upload',
+                    data: err
+                });
             })
+        }
+    })
+}
+
+module.exports.uploadMultiple = (req, res, next) => {
+
+    multiUpload(req, res, function (err, result) {
+        console.log(req.body);
+        console.log(req.files);
+        if (err) {
+            console.log("Error while files receiving", err);
+            res.status(200).json({
+                success: false,
+                message: 'Error while files receiving',
+                data: err
+            });
+        } else if (!req.files) {
+            console.log("No files received");
+            res.status(200).json({
+                success: false,
+                message: 'No files received'
+            });
+        } else {
+            var username = req.body.username;
+            console.log("username is:", username);
+            var profileNames = [];
+            for (let i = 0; i < req.files.length; i++) {
+                profileNames.push(req.files[i].filename);
+            }
+            let fileNamesArr = profileNames.join();
+            console.log("profileNames arr is: ", fileNamesArr);
+            // userquery.updateTable('users', {
+            //     'username': username
+            // }, {
+            //     'profilePath': fileNamesArr
+            // }, 'user_id', 'profilePath').then(resp => {
+            //     console.log('Profile upload successful');
+            //     res.status(200).json({
+            //         success: true,
+            //         statusCode: 200,
+            //         message: 'Files saved successful',
+            //         data: resp
+            //     });
+            // }).catch(err => {
+            //     console.log("Error while files saved", err);
+            //     res.status(200).json({
+            //         success: false,
+            //         statusCode: 500,
+            //         message: 'Error while files saved',
+            //         data: err
+            //     });
+            // })
+            res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Files saved successful',
+                data: result
+            });
         }
     })
 }

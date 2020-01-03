@@ -33,6 +33,8 @@ router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
 
 router.post('/getuserprofile', userCtrl.getUserProfile);
 
+router.post('/uploadmultiple', authCtrl.uploadMultiple);
+
 router.post('/addUser', authCtrl.validateLogin, userCtrl.addUser);
 
 router.put('/updateUser', authCtrl.validateLogin, userCtrl.updateUser);
