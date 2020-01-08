@@ -7,6 +7,14 @@ const fs = require('fs');
 const path = require('path');
 const image2base64 = require('image-to-base64');
 const base64 = require('node-base64-image');
+const readXlsxFile = require('read-excel-file');
+var fileUpload = require('../controllers/auth-controller.js');
+const XLSX = require('xlsx');
+const PdfReader = require('pdfreader');
+const pdf = require('pdf-parse');
+const WordExtractor = require("word-extractor");
+const textract = require('textract');
+
 // CRUD Operation API's
 module.exports.getUsers = (req, res, next) => {
 
@@ -43,38 +51,168 @@ module.exports.getOneUserById = (req, res, next) => {
 
 module.exports.getUserProfile = (req, res, next) => {
 
-    // console.log("request is", req.body);
-
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
-        // var originalImage = fs.readFileSync(__dirname + `../../../${DIR}/${resp[0].profilePath}`);
-        // console.log("originalImage is:", originalImage);
-        // var base64Image = new Buffer(originalImage).toString('base64');
-        // console.log("base64Image is:", base64Image);
-        var base64Image;
-        var Imagepath = path.join(__dirname + `../../../${DIR}/${resp[0].profilePath}`);
-        console.log("Image path is:", Imagepath);
-        var options = {
-            string: true,
-            local: true
-        };
-        base64.encode(Imagepath, options, (err, image) => {
-            if (err) {
-                console.log("error converting base64 format", err);
-            } else {
-                base64Image = image;
-                // console.log("base64 Image is:", base64Image);
+        console.log("file extension is:", resp[0].profilePath.split('.')[1]);
+        var filePath = path.join(__dirname + `../../../${DIR}/${resp[0].profilePath}`);
+        var extName = resp[0].profilePath.split('.')[1];
+        if (extName == 'docx') {
+            textract.fromFileWithPath(filePath, function (error, text) {
+                if (error) throw err;
+                console.log('docx text is:', text);
                 res.status(200).json({
                     success: true,
                     statusCode: 200,
-                    message: 'User data read successfully',
+                    message: 'Docx file read success',
                     data: resp,
-                    file: base64Image
+                    file: text,
+                    ext: extName
                 });
-            }
-        });
+            });
+        } else if (extName == 'doc') {
+            var extractor = new WordExtractor();
+            var extracted = extractor.extract(filePath);
+            extracted.then(function (doc) {
+                console.log(doc.getBody());
+                res.status(200).json({
+                    success: true,
+                    statusCode: 200,
+                    message: 'Doc file read success',
+                    data: resp,
+                    file: doc.getBody(),
+                    ext: extName
+                });
+            });
+        } else if (extName == 'txt' || extName == 'TXT') {
+            console.log("Text file path is:", filePath);
+            fs.readFile(filePath, {
+                encoding: 'utf-8'
+            }, function (err, data) {
+                if (!err) {
+                    // console.log('received data: ' + data);
+                    res.status(200).json({
+                        success: true,
+                        statusCode: 200,
+                        message: 'Text file read success',
+                        data: resp,
+                        file: data,
+                        ext: extName
+                    });
+                } else {
+                    console.log('Error while read text file', err);
+                    return res.status(200).json({
+                        success: true,
+                        statusCode: 200,
+                        message: 'Error while read text file',
+                        data: err
+                    });
+                }
+            });
+        } else if (extName == 'xlsx' || extName == 'xls' || extName == 'XLSX' || extName == 'XLS') {
+            var workbook = XLSX.readFile(filePath);
+            var sheet_name_list = workbook.SheetNames;
+            var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+            console.log(xlData);
+            let headersArr = [];
+            headersArr.push(Object.keys(xlData[0]));
+            res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Read excel file is success',
+                data: resp,
+                file: xlData,
+                ext: extName,
+                thead: headersArr
+            });
+        } else if (extName == 'jpg' || extName == 'png' || extName == 'gif' || extName == 'JPEG' || extName == 'PNG' || extName == 'GIF') {
+            var base64Image;
+            console.log("Image path is:", filePath);
+            var options = {
+                string: true,
+                local: true
+            };
+            base64.encode(filePath, options, (err, image) => {
+                if (err) {
+                    console.log("error converting base64 format", err);
+                    res.status(200).json({
+                        success: false,
+                        statusCode: 500,
+                        message: 'Error converting base64 format',
+                        data: err
+                    });
+                } else {
+                    base64Image = image;
+                    res.status(200).json({
+                        success: true,
+                        statusCode: 200,
+                        message: 'User data read successfully',
+                        data: resp,
+                        file: base64Image,
+                        ext: extName
+                    });
+                }
+            });
+        } else if (extName == 'pdf' || extName == 'PDF') {
+            let dataBuffer = fs.readFileSync(filePath);
+            pdf(dataBuffer).then(function (data) {
+                // number of pages
+                console.log(data.numpages);
+                // number of rendered pages
+                console.log(data.numrender);
+                // PDF info
+                console.log(data.info);
+                // PDF metadata
+                console.log(data.metadata);
+                // PDF.js version
+                // check https://mozilla.github.io/pdf.js/getting_started/
+                console.log(data.version);
+                // PDF text
+                console.log(data.text);
+                res.status(200).json({
+                    success: true,
+                    data: resp,
+                    file: data.text,
+                    ext: extName
+                });
+            });
+        } else {
+            console.log("Invalid file extension found.");
+            return res.status(200).json({
+                success: false,
+                statusCode: 404,
+                message: 'Invalid file extension found',
+                data: resp,
+                error: null
+            });
+        }
     }).catch(err => {
         console.log("error while getting user data:", err);
         res.status(200).json({
+            data: err
+        });
+    })
+}
+
+module.exports.getUsersProfiles = (req, res, next) => {
+
+    userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
+        var base64encode = [];
+        for (let i = 0; i < resp[0].uploadProfiles.split(',').length; i++) {
+            base64encode.push(new Buffer(fs.readFileSync(__dirname + `../../../${DIR}/${resp[0].uploadProfiles.split(',')[i]}`)).toString('base64'));
+            console.log("base64 encoded length is:", base64encode[i].length);
+        }
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Get users profiles',
+            data: resp,
+            files: base64encode
+        });
+    }).catch(err => {
+        console.log("Error while getting users profiles", err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while getting users profiles',
             data: err
         });
     })

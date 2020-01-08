@@ -25,7 +25,9 @@ router.post('/forgotpassword', authCtrl.forgotPassword);
 
 router.post('/changepassword', authCtrl.changePassword);
 
-router.post('/uploadProfile', authCtrl.uploadProfile);
+router.post('/uploadsingle', authCtrl.uploadSingle);
+
+router.post('/uploadmultiple', authCtrl.uploadMultiple);
 
 router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
 
@@ -33,7 +35,7 @@ router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
 
 router.post('/getuserprofile', userCtrl.getUserProfile);
 
-router.post('/uploadmultiple', authCtrl.uploadMultiple);
+router.post('/getusersprofiles', userCtrl.getUsersProfiles);
 
 router.post('/addUser', authCtrl.validateLogin, userCtrl.addUser);
 

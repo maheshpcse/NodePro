@@ -64,8 +64,14 @@
     "nodemon": "^2.0.2",
     "objection": "^1.6.11",
     "path": "^0.12.7",
+    "pdf-parse": "^1.1.1",
+    "pdfreader": "^1.0.6",
+    "read-excel-file": "^4.0.5",
     "request": "^2.88.0",
     "sessionstorage": "^0.1.0",
-    "underscore": "^1.9.1"
+    "textract": "^2.5.0",
+    "underscore": "^1.9.1",
+    "word-extractor": "^0.3.0",
+    "xlsx": "^0.15.4"
   }
 }
