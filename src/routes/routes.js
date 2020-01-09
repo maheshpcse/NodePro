@@ -6,6 +6,18 @@ var authCtrl = require('../controllers/auth-controller.js');
 var userCtrl = require('../controllers/user-controller.js');
 var taskCtrl = require('../controllers/task-controller.js');
 
+// server down or server timeout checking
+router.get('/server', (req, res) => {
+    connection.connect(function(err, result) {
+        if (err) {
+            console.log("Database connection error, server down", err);
+            res.status(200).json({
+                success: false
+            })
+        }
+    });
+});
+
 router.get('/', (req, res) => {
     console.log("API works!");
     res.status(200).json({
@@ -37,9 +49,11 @@ router.post('/getuserprofile', userCtrl.getUserProfile);
 
 router.post('/getusersprofiles', userCtrl.getUsersProfiles);
 
-router.post('/addUser', authCtrl.validateLogin, userCtrl.addUser);
+router.post('/addUser', userCtrl.addUser);
 
-router.put('/updateUser', authCtrl.validateLogin, userCtrl.updateUser);
+router.post('/updateUser', authCtrl.validateLogin, userCtrl.updateUser);
+
+router.post('/updateUserById', userCtrl.updateUserById);
 
 router.delete('/deleteUser', authCtrl.validateLogin, userCtrl.deleteUser);
 
@@ -58,33 +72,6 @@ router.get('/getDetails', authCtrl.validateLogin, userCtrl.getDetails);
 router.get('/getHavingData', authCtrl.validateLogin, userCtrl.getHavingData);
 
 router.post('/postData', authCtrl.validateLogin, userCtrl.addDataTransaction);
-
-router.get('/sp', (req, res, next) => {
-    // connection.connect();
-    // connection.query(`CREATE PROCEDURE test(id int)
-    // BEGIN
-    // SELECT * FROM student where user_id = 2 ;
-    // END;`, function (err, result, fields) {
-    //     if (err) {
-    //         console.log("error:", err);
-    //         res.status(400).send(err);
-    //     } else {
-    //         console.dir(result, {depth: null})
-    //         res.status(200).json(result);
-    //     }
-    // });
-    // connection.end();
-
-    knex.knex.raw(`CREATE PROCEDURE test_sp(id int)
-                BEGIN
-                SELECT * FROM users where user_id = 2 ;
-                END;`).then(function (result) {
-        console.dir(result, {
-            depth: null
-        });
-        res.status(200).json(result);
-    });
-});
 
 router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasks);
 

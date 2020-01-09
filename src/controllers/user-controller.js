@@ -52,7 +52,7 @@ module.exports.getOneUserById = (req, res, next) => {
 module.exports.getUserProfile = (req, res, next) => {
 
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
-        console.log("file extension is:", resp[0].profilePath.split('.')[1]);
+        // console.log("file extension is:", resp[0].profilePath.split('.')[1]);
         var filePath = path.join(__dirname + `../../../${DIR}/${resp[0].profilePath}`);
         var extName = resp[0].profilePath.split('.')[1];
         if (extName == 'docx') {
@@ -125,7 +125,7 @@ module.exports.getUserProfile = (req, res, next) => {
             });
         } else if (extName == 'jpg' || extName == 'png' || extName == 'gif' || extName == 'JPEG' || extName == 'PNG' || extName == 'GIF') {
             var base64Image;
-            console.log("Image path is:", filePath);
+            // console.log("Image path is:", filePath);
             var options = {
                 string: true,
                 local: true
@@ -220,7 +220,7 @@ module.exports.getUsersProfiles = (req, res, next) => {
 
 module.exports.addUser = (req, res, next) => {
 
-    userquery.insertTable('users', {
+    let columndata = {
         'firstname': req.body.firstname,
         'lastname': req.body.lastname,
         'username': req.body.username,
@@ -231,7 +231,9 @@ module.exports.addUser = (req, res, next) => {
         'department': req.body.department,
         'created_at': new Date(),
         'updated_at': new Date()
-    }).then(resp => {
+    };
+
+    userquery.insertTable('users', req.body).then(resp => {
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -272,7 +274,7 @@ module.exports.updateUser = (req, res, next) => {
 
 module.exports.updateUserById = (req, res, next) => {
 
-    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id}`, req.body).then(resp => {
+    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id} or username='${req.body.username}'`, req.body).then(resp => {
         console.log("User details updated successful");
         res.status(200).json({
             success: true,
@@ -281,7 +283,7 @@ module.exports.updateUserById = (req, res, next) => {
             data: resp
         });
     }).catch(err => {
-        console.log("Error while updating user details");
+        console.log("Error while updating user details", err);
         res.status(200).json({
             success: false,
             statusCode: 500,
