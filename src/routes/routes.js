@@ -12,8 +12,19 @@ router.get('/server', (req, res) => {
         if (err) {
             console.log("Database connection error, server down", err);
             res.status(200).json({
-                success: false
-            })
+                success: false,
+                statusCode: 500,
+                message: 'Database connection error, server down',
+                data: err,
+            });
+        } else if (result) {
+            console.log("Database connection established");
+            res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Database connection established',
+                data: result
+            });
         }
     });
 });
