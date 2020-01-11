@@ -1,18 +1,9 @@
-const config = require('./config.js');
+var CronJob = require('cron').CronJob;
+var config = require('../config/config.js');
+var server = require('../config/db.js');
 
-var mysql = require('mysql');
-
-var connection = mysql.createConnection({
-    host: config.database.host,
-    user: config.database.username,
-    password: config.database.password,
-    database: config.database.db,
-    multipleStatements: true
-});
-
-// server with db connection is checking
-var dbConnection = (req, res, next) => {
-    connection.connect(function (err, result) {
+new CronJob('*/5 * * * * *', function (req, res, next) {
+    server.connection.connect((err, result) => {
         if (err) {
             let response = {
                 data: err
@@ -34,20 +25,8 @@ var dbConnection = (req, res, next) => {
                     data: err,
                 });
             }
-        } else if (result) {
-            // let response = {
-            //     success: true,
-            //     statusCode: 200,
-            //     message: 'Database connection established',
-            //     data: result
-            // }
-            // console.log("Database connection established", response);
-            next();
+        } else {
+            console.log("Cron is running...");
         }
     });
-}
-
-module.exports = {
-    connection,
-    dbConnection
-};
+}, null, true);

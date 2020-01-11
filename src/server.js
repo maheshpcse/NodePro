@@ -1,14 +1,16 @@
 'use strict';
 // Required modules
 require('events').EventEmitter.defaultMaxListeners = 200;
+require('./library/cronJob.js');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const _ = require('underscore');
-const endpoints = require('./routes/routes.js');
-const config = require('./config/config.js');
-const Knexx = require('./config/knex.js');
+var endpoints = require('./routes/routes.js');
+var server = require('./config/db.js');
+var config = require('./config/config.js');
+var Knexx = require('./config/knex.js');
 const {
     Model
 } = require('objection');
@@ -32,7 +34,7 @@ app.use(function (req, res, next) {
 });
 
 // Routes
-app.use('/api', endpoints);
+app.use('/api', server.dbConnection, endpoints);
 
 app.listen(config.server.port, (req, res) => {
     console.log(`Express server is listening on http://${config.server.host}:${config.server.port}`);

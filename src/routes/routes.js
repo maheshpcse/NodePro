@@ -6,35 +6,19 @@ var authCtrl = require('../controllers/auth-controller.js');
 var userCtrl = require('../controllers/user-controller.js');
 var taskCtrl = require('../controllers/task-controller.js');
 
-// server down or server timeout checking
-router.get('/server', (req, res) => {
-    connection.connect(function(err, result) {
-        if (err) {
-            console.log("Database connection error, server down", err);
-            res.status(200).json({
-                success: false,
-                statusCode: 500,
-                message: 'Database connection error, server down',
-                data: err,
-            });
-        } else if (result) {
-            console.log("Database connection established");
-            res.status(200).json({
-                success: true,
-                statusCode: 200,
-                message: 'Database connection established',
-                data: result
-            });
-        }
-    });
-});
-
-router.get('/', (req, res) => {
+router.get('/server', (req, res, next) => {
     console.log("API works!");
+    let data = [
+        { name:'Mongodb', type:'Database' },
+        { name:'Express', type:'Backe-end Framework' },
+        { name:'Angular', type:'Front-end framework' },
+        { name:'Node.js', type:'Javascript server' }
+    ]
     res.status(200).json({
         success: true,
         statusCode: 200,
-        message: 'API works!'
+        message: 'API works!',
+        data: data
     });
 });
 
