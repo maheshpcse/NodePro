@@ -1,4 +1,4 @@
-const userquery = require('../library/userquery.js');
+var userquery = require('../library/userquery.js');
 var tasks = require('../models/Task.js');
 
 module.exports.getTasks = (req, res, next) => {

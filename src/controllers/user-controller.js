@@ -1,4 +1,4 @@
-const userquery = require('../library/userquery.js');
+var userquery = require('../library/userquery.js');
 var User = require('../models/User.js');
 var notifications = require('../controllers/notifications-controller.js');
 var config = require('../config/config.js');
@@ -32,7 +32,7 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getOneUserById = (req, res, next) => {
 
-    // console.log("request is", req.body);
+    console.log("request is", req.body);
 
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
         let filename = `${resp[0].profilePath}`;
@@ -51,6 +51,8 @@ module.exports.getOneUserById = (req, res, next) => {
 
 module.exports.getUserProfile = (req, res, next) => {
 
+    console.log("request body id:", req.body);
+    
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
         // console.log("file extension is:", resp[0].profilePath.split('.')[1]);
         var filePath = path.join(__dirname + `../../../${DIR}/${resp[0].profilePath}`);

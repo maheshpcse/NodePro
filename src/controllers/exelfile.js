@@ -1,9 +1,9 @@
-var Cryptr = require('cryptr');
+const Cryptr = require('cryptr');
 cryptr = new Cryptr('myTotalySecretKey');
 const fs = require('fs');
 const readXlsxFile = require('read-excel-file/node');
-const fileUploaded = require('./fileupload-controller');
-const commonFunction = require('../library/commonfunction.js');
+var fileUploaded = require('./fileupload-controller.js');
+var commonFunction = require('../library/commonfunction.js');
 // Read file function
 module.exports.authenticate = function (req, res) {
     let response;

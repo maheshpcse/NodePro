@@ -8,17 +8,37 @@ var taskCtrl = require('../controllers/task-controller.js');
 
 router.get('/server', (req, res, next) => {
     console.log("API works!");
-    let data = [
-        { name:'Mongodb', type:'Database' },
-        { name:'Express', type:'Backe-end Framework' },
-        { name:'Angular', type:'Front-end framework' },
-        { name:'Node.js', type:'Javascript server' }
+    let data = [{
+            name: 'Mongodb',
+            type: 'Database'
+        },
+        {
+            name: 'Express',
+            type: 'Backe-end Framework'
+        },
+        {
+            name: 'Angular',
+            type: 'Front-end framework'
+        },
+        {
+            name: 'Node.js',
+            type: 'Javascript server'
+        }
     ]
+    // var re = /^[\w+\d+._]+\@[\w+\d+_+]+\.[\w+\d+._]{2,8}$/;
+    var re = /^([a-zA-Z])+([a-zA-Z0-9_.+-])+\@(([a-zA-Z])+\.+?(com|co|in|org|net|edu|info|gov|vekomy))\.?(com|co|in|org|net|edu|info|gov)?$/;
+    var email = 'mahesh@email.com';
+    // if(email.includes('@gmail.') || email.includes('@email.') || email.includes('@hotmail.')) {
+    //     console.log("valid email");
+    // } else {
+    //     console.log("invalid email");
+    // }
     res.status(200).json({
         success: true,
         statusCode: 200,
         message: 'API works!',
-        data: data
+        data: data,
+        validate: re.test(String(email).toLowerCase())
     });
 });
 

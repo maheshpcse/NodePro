@@ -1,5 +1,5 @@
-const userquery = require('../library/userquery.js');
-const Notifications = require('../models/Notifications.js');
+var userquery = require('../library/userquery.js');
+var Notifications = require('../models/Notifications.js');
 
 // Add Notifications
 exports.addNotifications = (data, resp) => {
