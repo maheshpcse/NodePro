@@ -36,7 +36,7 @@ app.use(function (req, res, next) {
 });
 
 // Routes
-app.use('/api', server.dbConnection, endpoints);
+app.use('/api', endpoints);
 
 app.listen(config.server.port, (req, res) => {
     if (config.server.host == '0.0.0.0') {
