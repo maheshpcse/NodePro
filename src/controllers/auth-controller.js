@@ -250,6 +250,7 @@ module.exports.validateLogin = (req, res, next) => {
                 });
             } else {
                 req.decoded = decoded;
+                // console.log("decoded data", req.decoded);
                 next();
             }
         });

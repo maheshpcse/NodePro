@@ -55,6 +55,7 @@
     "flatted": "^2.0.1",
     "form-data": "^3.0.0",
     "fs": "0.0.1-security",
+    "google-translate-api": "^2.3.0",
     "image-to-base64": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.4",
@@ -71,6 +72,7 @@
     "request": "^2.88.0",
     "sessionstorage": "^0.1.0",
     "textract": "^2.5.0",
+    "translate": "^1.1.1",
     "underscore": "^1.9.1",
     "word-extractor": "^0.3.0",
     "xlsx": "^0.15.4"

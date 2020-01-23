@@ -10,6 +10,16 @@ const {
 const request = require('request');
 var knex = require('../config/knex.js');
 
+// Encrypt the text
+let encrypt = (text) => {
+    return CryptoJS.AES.encrypt(text, process.env.SECURITY_KEY).toString();
+}
+
+// Decrypt the text
+let decrypt = (text) => {
+    return CryptoJS.AES.decrypt(text, process.env.SECURITY_KEY).toString(CryptoJS.enc.Utf8);
+}
+
 // CRUD Operation Methods
 let insertTable = function (tableName, data) {
     return new Promise((resolve, reject) => {
@@ -260,6 +270,8 @@ let transactingTable = function (tableName1, tableName2, data) {
 // }
 
 module.exports = {
+    encrypt,
+    decrypt,
     insertTable,
     insertRawTable,
     insertOrUpdate,

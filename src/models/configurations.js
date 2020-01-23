@@ -16,6 +16,10 @@ class Configurations extends Model {
                 configId: { type: 'integer' },
                 config_name: { type: 'string' },
                 role: { type: 'string' },
+                viewConfig: { type: 'integer' },
+                addConfig: { type: 'integer' },
+                updateConfig: { type: 'integer' },
+                deleteConfig: { type: 'integer' },
                 status: { type: 'string' },
                 created_at: { type: 'date' },
                 updated_at: { type: 'date' }

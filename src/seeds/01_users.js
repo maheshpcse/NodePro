@@ -90,8 +90,8 @@ exports.seed = function (knex) {
         },
         {
           "user_id": "6",
-          "firstname": "P",
-          "lastname": "M",
+          "firstname": "Pachapalam",
+          "lastname": "Mahesh",
           "username": "admin",
           "email": "admin@email.com",
           "password": "1234",
@@ -158,8 +158,8 @@ exports.seed = function (knex) {
         },
         {
           "user_id": "10",
-          "firstname": "V",
-          "lastname": "K",
+          "firstname": "Vella",
+          "lastname": "Venu kalyan",
           "username": "master",
           "email": "master@email.com",
           "password": "1234",

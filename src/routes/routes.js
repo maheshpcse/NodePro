@@ -5,7 +5,10 @@ var knex = require('../config/knex.js');
 var authCtrl = require('../controllers/auth-controller.js');
 var userCtrl = require('../controllers/user-controller.js');
 var taskCtrl = require('../controllers/task-controller.js');
+var notifyCtrl = require('../controllers/notifications-controller.js');
+var configCtrl = require('../controllers/configurations-controller.js');
 
+// Server routes
 router.get('/server', (req, res, next) => {
     console.log("API works!");
     let data = [{
@@ -103,5 +106,15 @@ router.post('/updateTaskById', taskCtrl.updateTaskById);
 router.post('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
 
 router.post('/sendnotification', authCtrl.validateLogin, userCtrl.sendNotification);
+
+router.get('/getnotifications', authCtrl.validateLogin, notifyCtrl.getNotifications);
+
+// configurations routes
+
+router.post('/addConfiguration', authCtrl.validateLogin, configCtrl.addConfiguration);
+
+router.post('/updateConfiguration', authCtrl.validateLogin, configCtrl.updateConfiguration);
+
+router.get('/getConfigurations', authCtrl.validateLogin, configCtrl.getConfigurations);
 
 module.exports = router;

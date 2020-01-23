@@ -14,5 +14,12 @@ module.exports = {
     },
     file_upload_path: {
         directory: '../../../public/profiles/'
+    },
+    errorMsg: {
+        view: 'Not allowed to get data',
+        add: 'Not allowed to add data',
+        update: 'Not allowed to update data',
+        delete: 'Not allowed to delete data',
+        restore: 'Not allowed to restore data'
     }
 }
