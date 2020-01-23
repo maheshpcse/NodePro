@@ -25,20 +25,20 @@ router.get('/server', (req, res, next) => {
             type: 'Javascript server'
         }
     ]
-    // var re = /^[\w+\d+._]+\@[\w+\d+_+]+\.[\w+\d+._]{2,8}$/;
-    var re = /^([a-zA-Z])+([a-zA-Z0-9_.+-])+\@(([a-zA-Z])+\.+?(com|co|in|org|net|edu|info|gov|vekomy))\.?(com|co|in|org|net|edu|info|gov)?$/;
+    var re = /^[\w+\d+._]+\@[\w+\d+_+]+\.[\w+\d+._]{2,8}$/;
+    var re1 = /^([0-9]{6})?$/;
     var email = 'mahesh@email.com';
-    // if(email.includes('@gmail.') || email.includes('@email.') || email.includes('@hotmail.')) {
-    //     console.log("valid email");
-    // } else {
-    //     console.log("invalid email");
-    // }
+    var pincode = 517193;
+    var body = {};
+    body['id'] = 1;
+    body['name'] = 'akv';
     res.status(200).json({
         success: true,
         statusCode: 200,
         message: 'API works!',
         data: data,
-        validate: re.test(String(email).toLowerCase())
+        email_validate: re.test(String(email).toLowerCase()),
+        pincode_validate: re1.test(Number(pincode))
     });
 });
 

@@ -1,6 +1,5 @@
 require('dotenv').config();
 const Promise = require('bluebird');
-const knex = require('../config/knex.js');
 const CryptoJS = require('crypto-js');
 const {
     raw,
@@ -9,6 +8,7 @@ const {
     lit
 } = require('objection');
 const request = require('request');
+var knex = require('../config/knex.js');
 
 // CRUD Operation Methods
 let insertTable = function (tableName, data) {
