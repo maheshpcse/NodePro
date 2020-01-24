@@ -353,3 +353,7 @@ module.exports.changePassword = (req, res, next) => {
         });
     })
 }
+
+module.exports.oauthVerification = (req, res, next) => {
+    
+}

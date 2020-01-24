@@ -8,8 +8,8 @@ const translate = require('google-translate-api');
 module.exports.addConfiguration = (req, res, next) => {
 
     let data = {
-        config_name: 'Send Notifications',
-        role: 'admin',
+        config_name: 'Delete Notifications',
+        role: 'user',
         viewConfig: 1,
         addConfig: 1,
         updateConfig: 1,
@@ -71,11 +71,14 @@ module.exports.getConfigurations = (req, res, next) => {
         let role = req.headers['role'];
         console.log("userId :", id, ",", "userrole :", role);
 
+        let translateText;
+
         await translate('Hello world', {
             from: 'en',
             to: 'es'
         }).then(res => {
             console.log(res.text);
+            translateText = res.text;
         }).catch(err => {
             console.error("Error :-", err);
         })
@@ -86,7 +89,8 @@ module.exports.getConfigurations = (req, res, next) => {
                 success: true,
                 statusCode: 200,
                 message: 'Get configurations',
-                data: resp
+                data: resp,
+                language: translateText
             });
         }).catch(err => {
             console.log('Error while getting configurations', err);

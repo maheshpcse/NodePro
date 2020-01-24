@@ -2,7 +2,16 @@ var CronJob = require('cron').CronJob;
 var config = require('../config/config.js');
 var server = require('../config/db.js');
 
-new CronJob('*/5 * * * * *', function (req, res, next) {
+new CronJob('*/10 * * * * *', (req, res, next) => {
+    console.log("Cron is running...");
+    // checkServerConnection(req, res, next);
+}, null, false);
+
+new CronJob('* */5 * * * *', () => {
+    console.log("Cron is running every 5 minutes...");
+}, null, false);
+
+let checkServerConnection = (req, res, next) => {
     server.connection.connect((err, result) => {
         if (err) {
             let response = {
@@ -20,13 +29,31 @@ new CronJob('*/5 * * * * *', function (req, res, next) {
                 console.log("Database access denied for user, check your db credentials", err);
                 return res.status(200).json({
                     success: false,
-                    statusCode: 500,
+                    statusCode: 402,
                     message: 'Database access denied for user, check your db credentials',
                     data: err,
                 });
             }
+        } else if (result != null || result != undefined) {
+            console.log("Database connection secured");
+            res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Database connection secured',
+                data: result
+            });
         } else {
-            console.log("Cron is running...");
+            console.log("Server is not connected to db");
+            res.status(200).json({
+                success: false,
+                statusCode: 404,
+                message: 'Server is not connected to db',
+                data: null
+            });
         }
     });
-}, null, true);
+}
+
+module.exports = {
+    checkServerConnection
+}

@@ -33,7 +33,7 @@ let getErrorMessage = (method, status) => {
         } else {
             resolve('Error while updating information');
         }
-    })
+    });
 }
 
 module.exports = {

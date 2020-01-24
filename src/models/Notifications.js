@@ -19,7 +19,7 @@ class Notifications extends Model {
                 module_name: { type: 'string' },
                 sender_name: { type: 'string' },
                 receiver_name: { type: 'string' },
-                status: { type: 'string' },
+                status: { type: 'integer' },
                 user_id: { type: 'integer' },
                 created_at: { type: 'timestamp' },
                 updated_at: { type: 'timestamp' }

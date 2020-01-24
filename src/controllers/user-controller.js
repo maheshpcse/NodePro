@@ -442,13 +442,13 @@ module.exports.sendNotification = (req, res, next) => {
 
     (async () => {
         let notifyData = {
-            'notification': req.body.notification,
-            'type_of_notify': req.body.type_of_notify,
-            'module_name': req.body.module_name,
-            'sender_name': req.body.sender_name,
-            'receiver_name': req.body.receiver_name,
-            'status': req.body.status,
-            'user_id': req.body.user_id,
+            'notification': 'birthday',
+            'type_of_notify': 'wishes',
+            'module_name': 'users',
+            'sender_name': 'user1',
+            'receiver_name': 'user2',
+            'status': 1,
+            'user_id': 1,
             'created_at': new Date(),
             'updated_at': new Date()
         }
@@ -464,7 +464,12 @@ module.exports.sendNotification = (req, res, next) => {
                     data: resp
                 });
             }).catch(err => {
-                res.status(200).send(err);
+                res.status(200).json({
+                    success: false,
+                    statusCode: 500,
+                    message: 'Falied to sent notifications',
+                    data: err
+                });
             })
 
         }).catch(err => {

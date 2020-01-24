@@ -1,6 +1,9 @@
+'use strict';
+
 require('dotenv').config();
 const Promise = require('bluebird');
 const CryptoJS = require('crypto-js');
+const sessionstorage = require('sessionstorage');
 const {
     raw,
     objection,
@@ -11,16 +14,17 @@ const {
 var knex = require('../config/knex.js');
 var userquery = require('./userquery.js');
 
-// role is assigned or not
-let checkRoleIsFunction = (req, empId, empRole) => {
+
+// checking if user is having (ADD/UPDATE/DELETE/VIEW) data
+let checkRoleIsHaving = (req, empId, empRole, configId, method) => {
     return new Promise((resolve, reject) => {
         var id = req.headers['id'];
         var role = req.headers['role'];
-        console.log("user id:", id, ",", "role:", role);
+        console.log("userId:", id, ",", "role:", role, ",", "configId:", configId, ",", "method:", method);
         try {
             if (id == empId && role == empRole) {
                 (async () => {
-                    await isPrivilegedCheck(empId, empRole).then(async data => {
+                    await isPrivilegedCheck(configId, empRole, method).then(async data => {
                         if (data) {
                             resolve(true);
                         } else {
@@ -31,11 +35,9 @@ let checkRoleIsFunction = (req, empId, empRole) => {
                         resolve(false);
                     })
                 })();
-            }
-            if (id == empId && empRole.includes(role)) {
-                // resolve(true);
+            } else if (id == empId && empRole.includes(role)) {
                 (async () => {
-                    await isPrivilegedCheck(empId, role).then(async data => {
+                    await isPrivilegedCheck(configId, empRole, method).then(async data => {
                         if (data) {
                             resolve(true);
                         } else {
@@ -46,25 +48,35 @@ let checkRoleIsFunction = (req, empId, empRole) => {
                         resolve(false);
                     })
                 })();
-            } else {
-                resolve(false);
             }
         } catch (error) {
-            console.log("Error while checking roles", error);
-            resolve(false);
+
         }
     })
 }
 
 // check role is having privileges to access data
-let isPrivilegedCheck = (empId, empRole) => {
-
+let isPrivilegedCheck = (configId, empRole, method) => {
     return new Promise((resolve, reject) => {
-        userquery.simpleselect('configurations', '*', `userId = '${empId}' && role = '${empRole}'`).then(resp => {
-            // console.log("response is:", resp);
-            if (resp.viewConfig == 1) {
-                resolve(true);
-            } else if (resp.viewConfig == 0) {
+        userquery.simpleselect('configurations', '*', `configId = ${configId} AND role = '${empRole}'`).then(resp => {
+            console.log("response is:", resp);
+            if (method == 'I' || method == 'i') {
+                if (resp.addConfig == 1) {
+                    resolve(true);
+                }
+            } else if (method == 'U' || method == 'u') {
+                if (resp.updateConfig == 1) {
+                    resolve(true);
+                }
+            } else if (method == 'D' || method == 'd') {
+                if (resp.deleteConfig == 1) {
+                    resolve(true);
+                }
+            } else if (method == 'V' || method == 'v') {
+                if (resp.viewConfig == 1) {
+                    resolve(true);
+                }
+            } else {
                 resolve(false);
             }
         }).catch(err => {
@@ -75,5 +87,6 @@ let isPrivilegedCheck = (empId, empRole) => {
 }
 
 module.exports = {
-    checkRoleIsFunction
+    checkRoleIsHaving,
+    isPrivilegedCheck
 }

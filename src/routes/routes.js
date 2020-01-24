@@ -2,6 +2,7 @@ const express = require('express');
 var router = express.Router();
 var connection = require('../config/db.js');
 var knex = require('../config/knex.js');
+var cronJob = require('../library/cronJob.js');
 var authCtrl = require('../controllers/auth-controller.js');
 var userCtrl = require('../controllers/user-controller.js');
 var taskCtrl = require('../controllers/task-controller.js');
@@ -11,39 +12,15 @@ var configCtrl = require('../controllers/configurations-controller.js');
 // Server routes
 router.get('/server', (req, res, next) => {
     console.log("API works!");
-    let data = [{
-            name: 'Mongodb',
-            type: 'Database'
-        },
-        {
-            name: 'Express',
-            type: 'Backe-end Framework'
-        },
-        {
-            name: 'Angular',
-            type: 'Front-end framework'
-        },
-        {
-            name: 'Node.js',
-            type: 'Javascript server'
-        }
-    ]
-    var re = /^[\w+\d+._]+\@[\w+\d+_+]+\.[\w+\d+._]{2,8}$/;
-    var re1 = /^([0-9]{6})?$/;
-    var email = 'mahesh@email.com';
-    var pincode = 517193;
-    var body = {};
-    body['id'] = 1;
-    body['name'] = 'akv';
     res.status(200).json({
         success: true,
         statusCode: 200,
-        message: 'API works!',
-        data: data,
-        email_validate: re.test(String(email).toLowerCase()),
-        pincode_validate: re1.test(Number(pincode))
+        message: 'API works!'
     });
 });
+
+// URL for every 5 minuites checking db connection
+router.get('/dbconnection', authCtrl.validateLogin, cronJob.checkServerConnection);
 
 router.post('/login', authCtrl.userLogin);
 
@@ -63,15 +40,15 @@ router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
 
 // router.post('/getoneuser', userCtrl.getOneUserById);
 
-router.post('/getuserprofile', userCtrl.getUserProfile);
+router.post('/getuserprofile', authCtrl.validateLogin, userCtrl.getUserProfile);
 
-router.post('/getusersprofiles', userCtrl.getUsersProfiles);
+router.post('/getusersprofiles', authCtrl.validateLogin, userCtrl.getUsersProfiles);
 
-router.post('/addUser', userCtrl.addUser);
+router.post('/addUser', authCtrl.validateLogin, userCtrl.addUser);
 
 router.post('/updateUser', authCtrl.validateLogin, userCtrl.updateUser);
 
-router.post('/updateUserById', userCtrl.updateUserById);
+router.post('/updateUserById', authCtrl.validateLogin, userCtrl.updateUserById);
 
 router.delete('/deleteUser', authCtrl.validateLogin, userCtrl.deleteUser);
 
@@ -101,13 +78,17 @@ router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
 
 router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 
-router.post('/updateTaskById', taskCtrl.updateTaskById);
+router.post('/updateTaskById', authCtrl.validateLogin, taskCtrl.updateTaskById);
 
 router.post('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
 
-router.post('/sendnotification', authCtrl.validateLogin, userCtrl.sendNotification);
+router.post('/sendNotification', authCtrl.validateLogin, userCtrl.sendNotification);
 
-router.get('/getnotifications', authCtrl.validateLogin, notifyCtrl.getNotifications);
+router.get('/getNotifications', authCtrl.validateLogin, notifyCtrl.getNotifications);
+
+router.post('/tempDeleteNotification', authCtrl.validateLogin, notifyCtrl.tempDeleteNotifications);
+
+router.post('/confirmDeleteNotification', authCtrl.validateLogin, notifyCtrl.confirmDeleleNotifications);
 
 // configurations routes
 

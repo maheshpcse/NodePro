@@ -1,7 +1,7 @@
 'use strict';
 // Required modules
 // require('events').EventEmitter.defaultMaxListeners = 200;
-// require('./library/cronJob.js');
+require('./library/cronJob.js');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
