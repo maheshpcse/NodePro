@@ -234,8 +234,8 @@ module.exports.userSignup = (req, res, next) => {
 // checking valid Login API
 module.exports.validateLogin = (req, res, next) => {
 
-    // let token = SessionStorage.getItem('token');
-    let token = req.headers['x-access-token'] || req.headers['authorization'];
+    // console.log(req.headers);
+    let token = req.headers['x-access-token'] || req.headers['authorization'].split(',')[0];
     // console.log("token is:", token);
 
     if (token.startsWith('Bearer ')) {

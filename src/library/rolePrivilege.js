@@ -18,8 +18,8 @@ var userquery = require('./userquery.js');
 // checking if user is having (ADD/UPDATE/DELETE/VIEW) data
 let checkRoleIsHaving = (req, empId, empRole, configId, method) => {
     return new Promise((resolve, reject) => {
-        var id = req.headers['id'];
-        var role = req.headers['role'];
+        var id = req.headers['authorization'].split(',')[1];
+        var role = req.headers['authorization'].split(',')[2];
         console.log("userId:", id, ",", "role:", role, ",", "configId:", configId, ",", "method:", method);
         try {
             if (id == empId && role == empRole) {
@@ -58,22 +58,23 @@ let checkRoleIsHaving = (req, empId, empRole, configId, method) => {
 // check role is having privileges to access data
 let isPrivilegedCheck = (configId, empRole, method) => {
     return new Promise((resolve, reject) => {
-        userquery.simpleselect('configurations', '*', `configId = ${configId} AND role = '${empRole}'`).then(resp => {
-            console.log("response is:", resp);
+        userquery.simpleselect('configurations', '*', `configId = ${configId} AND role LIKE '%${empRole}%'`).then(resp => {
+            console.log("config response is:", resp);
+            console.log("method is:", method, typeof (method));
             if (method == 'I' || method == 'i') {
-                if (resp.addConfig == 1) {
+                if (resp[0].addConfig == 1) {
                     resolve(true);
                 }
             } else if (method == 'U' || method == 'u') {
-                if (resp.updateConfig == 1) {
+                if (resp[0].updateConfig == 1) {
                     resolve(true);
                 }
             } else if (method == 'D' || method == 'd') {
-                if (resp.deleteConfig == 1) {
+                if (resp[0].deleteConfig == 1) {
                     resolve(true);
                 }
-            } else if (method == 'V' || method == 'v') {
-                if (resp.viewConfig == 1) {
+            } else if (method === 'V' || method === 'v') {
+                if (resp[0].viewConfig == 1) {
                     resolve(true);
                 }
             } else {
@@ -83,7 +84,7 @@ let isPrivilegedCheck = (configId, empRole, method) => {
             console.log("Error while getting configuration data", err);
             resolve(false);
         })
-    })
+    });
 }
 
 module.exports = {
