@@ -1,9 +1,9 @@
 exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('table_name').del()
+  return knex('notifications').del()
     .then(function () {
       // Inserts seed entries
-      return knex('table_name').insert([{
+      return knex('notifications').insert([{
           "notify_id": "1",
           "notification": "sample notification",
           "type_of_notify": "message",
@@ -12,6 +12,7 @@ exports.seed = function (knex) {
           "receiver_name": "user2",
           "status": "1",
           "user_id": "1",
+          "notify_time": "",
           "created_at": "2019-12-30 18:31:39",
           "updated_at": "2019-12-30 18:31:39"
         },
@@ -24,6 +25,7 @@ exports.seed = function (knex) {
           "receiver_name": "user2",
           "status": "1",
           "user_id": "2",
+          "notify_time": "",
           "created_at": "2020-01-24 14:44:32",
           "updated_at": "2020-01-24 14:44:32"
         },
@@ -35,7 +37,8 @@ exports.seed = function (knex) {
           "sender_name": "user1",
           "receiver_name": "user2",
           "status": "1",
-          "user_id": "3",
+          "user_id": "3",          
+          "notify_time": "",
           "created_at": "2020-01-24 14:46:21",
           "updated_at": "2020-01-24 14:46:21"
         },
@@ -48,6 +51,7 @@ exports.seed = function (knex) {
           "receiver_name": "user2",
           "status": "1",
           "user_id": "4",
+          "notify_time": "",
           "created_at": "2020-01-24 14:47:15",
           "updated_at": "2020-01-24 14:47:15"
         }
