@@ -38,7 +38,7 @@ module.exports.getNotifications = (req, res, next) => {
         let notificationCount;
 
         await rolePrivilege.checkRoleIsHaving(req, 'admin', 'admin', 1, 'V').then(async data => {
-            console.log("response issssssssss:", data);
+            // console.log("response issssssssss:", data);
             if (data == false) {
                 message = await settingsConfig.getErrorMessage('V', 0)
                 console.log("message is:", message);
@@ -50,7 +50,7 @@ module.exports.getNotifications = (req, res, next) => {
                 });
             }
             await userquery.simpleselect('notifications', '*').then(resp => {
-                console.log("responses isssss=======> :", resp);
+                console.log("Notifications count is:", resp.length);
                 notificationCount = resp.length ? resp.length : 0;
                 res.status(200).json({
                     success: true,

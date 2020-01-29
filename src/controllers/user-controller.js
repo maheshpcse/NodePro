@@ -51,7 +51,7 @@ module.exports.getOneUserById = (req, res, next) => {
 
 module.exports.getUserProfile = (req, res, next) => {
 
-    console.log("request body id:", req.body);
+    // console.log("request body id:", req.body);
     
     userquery.simpleselect('users', '*', `username='${req.body.username}'`).then(resp => {
         // console.log("file extension is:", resp[0].profilePath.split('.')[1]);

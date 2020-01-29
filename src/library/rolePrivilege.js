@@ -59,8 +59,8 @@ let checkRoleIsHaving = (req, empId, empRole, configId, method) => {
 let isPrivilegedCheck = (configId, empRole, method) => {
     return new Promise((resolve, reject) => {
         userquery.simpleselect('configurations', '*', `configId = ${configId} AND role LIKE '%${empRole}%'`).then(resp => {
-            console.log("config response is:", resp);
-            console.log("method is:", method, typeof (method));
+            // console.log("config response is:", resp);
+            // console.log("method is:", method, typeof (method));
             if (method == 'I' || method == 'i') {
                 if (resp[0].addConfig == 1) {
                     resolve(true);
