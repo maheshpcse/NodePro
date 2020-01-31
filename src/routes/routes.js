@@ -1,4 +1,6 @@
 const express = require('express');
+const XlsxPopulate = require('xlsx-populate');
+const XLSX = require('xlsx');
 var router = express.Router();
 var connection = require('../config/db.js');
 var knex = require('../config/knex.js');
@@ -18,6 +20,29 @@ router.get('/server', (req, res, next) => {
         message: 'API works!'
     });
 });
+
+// Download a file
+router.post('/download', (req, res, next) => {
+    console.log("request data is:", req.body);
+    // XlsxPopulate.fromBlankAsync()
+    //     .then(workbook => {
+    //         workbook.sheet("Sheet1").cell("A1").value("Akrivia Automation PVT LTD").style({
+    //             fontColor: "orange",
+    //             wrapText: true
+    //         })
+    //         workbook.toFileAsync("./a.xlsx");
+    //     });
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(req.body);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'User tasks');
+    XLSX.writeFile(workbook, 'a.xlsx', {Props: 'SheetJs'});
+    res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'File download successful',
+        data: req.body
+    });
+})
 
 // URL for every 5 minuites checking db connection
 router.get('/dbconnection', authCtrl.validateLogin, cronJob.checkServerConnection);
