@@ -1,3 +1,5 @@
+const { transaction } = require('objection');
+var knex = require('../config/knex.js');
 var userquery = require('../library/userquery.js');
 var tasks = require('../models/Task.js');
 
@@ -165,4 +167,46 @@ module.exports.deleteTask = (req, res, next) => {
         console.log("Error while deleting task", err);
         res.status(200).send(err);
     })
+}
+
+
+// Transaction starts
+// Passing around a transaction object
+module.exports.addTaskByTrans = (req, res, next) => {
+
+    (async () => {
+
+        try {
+            const task = await tasks.transaction(async trx => {
+                const work = await tasks.query(trx).insert({
+                    title: 'searching',
+                    description: 'living purpose',
+                    is_complete: 0,
+                    user_id: 6
+                });
+                const task = await work.$relatedQuery('tasks', trx).insert({
+                    title: 'learning',
+                    description: 'car and bike driving',
+                    is_complete: 0,
+                    user_id: 6
+                });
+                return task;
+            });
+            console.log("Both task and work is inserted", task);
+            return res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Both task and work is inserted'
+            });
+        } catch (error) {
+            console.log('Something went wrong!, Neither task nor work is inserted', error);
+            return res.status(200).json({
+                success: false,
+                statusCode: 500,
+                message: 'Something went wrong!, Neither task nor work is inserted',
+                data: null
+            });
+        }
+        
+    })();
 }
