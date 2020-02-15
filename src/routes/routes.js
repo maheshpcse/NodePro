@@ -123,4 +123,6 @@ router.post('/updateConfiguration', authCtrl.validateLogin, configCtrl.updateCon
 
 router.get('/getConfigurations', authCtrl.validateLogin, configCtrl.getConfigurations);
 
+router.post('/addTaskByTrans', taskCtrl.addTaskByTrans);
+
 module.exports = router;
