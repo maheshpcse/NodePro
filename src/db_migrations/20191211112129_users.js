@@ -9,10 +9,11 @@ exports.up = function (knex, Promise) {
       table.string('password', 100).notNullable().defaultTo('1234')
       table.string('phonenumber', 20).notNullable().defaultTo('9876543210');
       table.string('role', 20).notNullable().defaultTo('user');
-      table.specificType('assigned_roles', "enum('user', 'manager', 'admin')").notNullable();
+      table.string('assigned_roles', 100).notNullable();
       table.string('designation', 100).notNullable();
       table.string('department', 100).notNullable();
       table.string('profilePath', 255).notNullable();
+      table.string('uploadProfiles', 255).notNullable();
       table.timestamp('created_at').defaultTo(knex.fn.now())
       table.timestamp('updated_at').defaultTo(knex.fn.now())
     })
