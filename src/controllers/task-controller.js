@@ -83,6 +83,8 @@ module.exports.addTask = (req, res, next) => {
 
     console.log("request body is", req.body);
 
+    req.body.created_at = new Date(req.body.date)
+
     // let columndata = {
     //     'title': req.body.title,
     //     'description': req.body.description,
@@ -177,14 +179,14 @@ module.exports.addTaskByTrans = (req, res, next) => {
     (async () => {
 
         try {
-            const task = await tasks.transaction(async trx => {
+            const task = await knex.knex.transaction(async trx => {
                 const work = await tasks.query(trx).insert({
                     title: 'searching',
                     description: 'living purpose',
                     is_complete: 0,
                     user_id: 6
                 });
-                const task = await work.$relatedQuery('tasks', trx).insert({
+                task = await work.$relatedQuery('tasks', trx).insert({
                     title: 'learning',
                     description: 'car and bike driving',
                     is_complete: 0,
@@ -192,7 +194,7 @@ module.exports.addTaskByTrans = (req, res, next) => {
                 });
                 return task;
             });
-            console.log("Both task and work is inserted", task);
+            console.log("Both task and work is inserted");
             return res.status(200).json({
                 success: true,
                 statusCode: 200,
