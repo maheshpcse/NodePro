@@ -1,9 +1,9 @@
 exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('table_name').del()
+  return knex('configurations').del()
     .then(function () {
       // Inserts seed entries
-      return knex('table_name').insert([{
+      return knex('configurations').insert([{
           "configId": "1",
           "config_name": "Get Notifications",
           "userId": "user",
