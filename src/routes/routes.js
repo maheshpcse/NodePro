@@ -117,11 +117,13 @@ router.post('/confirmDeleteNotification', authCtrl.validateLogin, notifyCtrl.con
 
 // configurations routes
 
-router.post('/addConfiguration', authCtrl.validateLogin, configCtrl.addConfiguration);
+router.get('/addConfiguration', configCtrl.addConfiguration);
 
 router.post('/updateConfiguration', authCtrl.validateLogin, configCtrl.updateConfiguration);
 
-router.get('/getConfigurations', authCtrl.validateLogin, configCtrl.getConfigurations);
+router.post('/updateConfigurations', configCtrl.updateConfigurations);
+
+router.get('/getConfigurations', configCtrl.getConfigurations);
 
 router.get('/addTaskByTrans', taskCtrl.addTaskByTrans);
 

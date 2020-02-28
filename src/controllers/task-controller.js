@@ -83,7 +83,7 @@ module.exports.addTask = (req, res, next) => {
 
     console.log("request body is", req.body);
 
-    req.body.created_at = new Date(req.body.date)
+    // req.body.created_at = new Date(req.body.date)
 
     // let columndata = {
     //     'title': req.body.title,

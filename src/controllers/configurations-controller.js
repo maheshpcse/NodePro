@@ -7,15 +7,17 @@ const translate = require('google-translate-api');
 
 module.exports.addConfiguration = (req, res, next) => {
 
-    let data = {
-        config_name: 'Delete Notifications',
-        role: 'user',
-        viewConfig: 1,
-        addConfig: 1,
-        updateConfig: 1,
-        deleteConfig: 1
-    }
-    userquery.insertTable('configurations', data).then(resp => {
+    let data = [
+        {
+            config_name: 'Task Info',
+            role: 'user',
+            viewConfig: 0,
+            addConfig: 1,
+            updateConfig: 1,
+            deleteConfig: 1
+        }
+    ]
+    userquery.insertTable('configurations', req.body).then(resp => {
         console.log("Added configuration");
         res.status(200).json({
             success: true,
@@ -63,34 +65,54 @@ module.exports.updateConfiguration = (req, res, next) => {
     })
 }
 
+module.exports.updateConfigurations = (req, res, next) => {
+
+    userquery.insertOrUpdate(configurations, req.body).then(resp => {
+        console.log("configuration updated", resp);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Configuration updated',
+            data: resp
+        });
+    }).catch(err => {
+        console.log("Error while updating configuration", err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while updating configuration',
+            data: err
+        });
+    })
+}
+
 module.exports.getConfigurations = (req, res, next) => {
 
     (async () => {
 
-        let id = req.headers['id'];
-        let role = req.headers['role'];
-        console.log("userId :", id, ",", "userrole :", role);
+        // let id = req.headers['id'];
+        // let role = req.headers['role'];
+        // console.log("userId :", id, ",", "userrole :", role);
 
-        let translateText;
+        // let translateText;
 
-        await translate('Hello world', {
-            from: 'en',
-            to: 'es'
-        }).then(res => {
-            console.log(res.text);
-            translateText = res.text;
-        }).catch(err => {
-            console.error("Error :-", err);
-        })
+        // await translate('Hello world', {
+        //     from: 'en',
+        //     to: 'es'
+        // }).then(res => {
+        //     console.log(res.text);
+        //     translateText = res.text;
+        // }).catch(err => {
+        //     console.error("Error :-", err);
+        // })
 
         await userquery.simpleselect('configurations', '*').then(async resp => {
-            console.log('response iss:', resp);
+            // console.log('response iss:', resp);
             res.status(200).json({
                 success: true,
                 statusCode: 200,
                 message: 'Get configurations',
-                data: resp,
-                language: translateText
+                data: resp
             });
         }).catch(err => {
             console.log('Error while getting configurations', err);
