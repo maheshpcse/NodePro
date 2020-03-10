@@ -81,7 +81,7 @@ module.exports.getTaskById = (req, res, next) => {
 
 module.exports.addTask = (req, res, next) => {
 
-    console.log("request body is", req.body);
+    // console.log("request body is", req.body);
 
     // req.body.created_at = new Date(req.body.date)
 
@@ -95,7 +95,7 @@ module.exports.addTask = (req, res, next) => {
     // }
 
     userquery.insertTable('tasks', req.body).then(resp => {
-        console.log("Task inserted successful");
+        // console.log("Task inserted successful");
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -103,7 +103,7 @@ module.exports.addTask = (req, res, next) => {
             data: resp
         });
     }).catch(err => {
-        console.log("Error while inserting task", err);
+        // console.log("Error while inserting task", err);
         res.status(200).send(err);
     })
 }

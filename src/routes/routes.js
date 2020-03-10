@@ -61,7 +61,7 @@ router.post('/uploadsingle', authCtrl.uploadSingle);
 
 router.post('/uploadmultiple', authCtrl.uploadMultiple);
 
-router.get('/getUsers', authCtrl.validateLogin, userCtrl.getUsers);
+router.get('/getUsers', userCtrl.getUsers);
 
 // router.post('/getoneuser', userCtrl.getOneUserById);
 
@@ -99,7 +99,7 @@ router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasks);
 
 router.get('/getTaskById', authCtrl.validateLogin, taskCtrl.getTaskById);
 
-router.post('/addTask', authCtrl.validateLogin, taskCtrl.addTask);
+router.post('/addTask', taskCtrl.addTask);
 
 router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 

@@ -107,7 +107,7 @@ module.exports.getConfigurations = (req, res, next) => {
         // })
 
         await userquery.simpleselect('configurations', '*').then(async resp => {
-            console.log('Module configurations:', resp);
+            // console.log('Module configurations:', resp);
             res.status(200).json({
                 success: true,
                 statusCode: 200,
@@ -115,7 +115,7 @@ module.exports.getConfigurations = (req, res, next) => {
                 data: resp
             });
         }).catch(err => {
-            console.log('Error while getting module configurations', err);
+            // console.log('Error while getting module configurations', err);
             res.status(200).json({
                 success: false,
                 statusCode: 500,

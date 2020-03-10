@@ -39,10 +39,12 @@ app.use(function (req, res, next) {
 app.use('/api', endpoints);
 
 app.listen(config.server.port, (req, res) => {
-    if (config.server.host == '0.0.0.0') {
-        config.server.host = 'localhost';
+    if (config.server.host != 'localhost' && config.server.host != '0.0.0.0') {
         console.log(`Express server is listening on http://${config.server.host}:${config.server.port}`);
     } else {
+        config.server.host = 'localhost';
         console.log(`Express server is listening on http://${config.server.host}:${config.server.port}`);
     }
 });
+
+module.exports = app;
