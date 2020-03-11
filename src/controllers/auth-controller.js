@@ -186,9 +186,16 @@ module.exports.userLogin = (req, res, next) => {
             statusCode: 200,
             message: 'Login successful',
             data: result,
+            token: token,
             id: result[0].username,
             role: result[0].role,
-            token: token
+            firstname: result[0].firstname,
+            lastname: result[0].lastname,
+            password: result[0].password,
+            phonenumber: result[0].phonenumber,
+            designation: result[0].designation,
+            department: result[0].department,
+            created_at: result[0].created_at
         });
     }).catch(err => {
         console.log("Error while login", err);
