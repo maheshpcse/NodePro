@@ -11,8 +11,8 @@ describe('Express server test', () => {
                 .post('/api/addTask')
                 .send(
                     {
-                        'title': 'test case task',
-                        'description': 'testing the add task api',
+                        'title': 'vacation',
+                        'description': 'reach the valley',
                         'is_complete': 0,
                         'user_id': 6,
                         'created_at': new Date(),

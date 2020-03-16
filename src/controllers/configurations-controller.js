@@ -10,11 +10,15 @@ module.exports.addConfiguration = (req, res, next) => {
     let data = [
         {
             config_name: 'Task Info',
+            userId: 'user',
             role: 'user',
-            viewConfig: 0,
-            addConfig: 1,
-            updateConfig: 1,
-            deleteConfig: 1
+            viewConfig: 1,
+            addConfig: 0,
+            updateConfig: 0,
+            deleteConfig: 0,
+            status: 'Active',
+            created_at: new Date(),
+            updated_at: new Date()
         }
     ]
     userquery.insertTable('configurations', req.body).then(resp => {
