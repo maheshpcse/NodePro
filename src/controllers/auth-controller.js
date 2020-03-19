@@ -162,50 +162,71 @@ module.exports.userLogin = (req, res, next) => {
 
     let wherecond = `username='${req.body.username}' AND password='${req.body.password}'`;
 
-    userquery.simpleselect('users', '*', wherecond).then(result => {
-        // console.log("response is:", result);
-        if (result == '' || result == null || result == []) {
-            console.log("Invalid username or password");
-            return res.status(200).json({
+    (async () => {
+        await userquery.simpleselect('users', '*', wherecond).then( async result => {
+            // console.log("response is:", result);
+            if (result == '' || result == null || result == []) {
+                console.log("Invalid username or password");
+                return res.status(200).json({
+                    success: false,
+                    statusCode: 404,
+                    message: 'Invalid username or password',
+                    data: null
+                });
+            }
+            if(result[0].configure == 'Blocked') {
+                console.log("User is blocked");
+                return res.status(200).json({
+                    success: false,
+                    statusCode: 405,
+                    message: 'User is blocked',
+                    data: null
+                });
+            }
+            await userquery.updateTableWithWhere('users', `user_id=${result[0].user_id}`, { status: 'Active' }).then(resp => {
+                console.log("Login successful", resp);
+                var token = jwt.sign({
+                    id: result[0].username
+                }, config.database.securitykey, {
+                    expiresIn: '24h'
+                });
+                console.log("token is:", token);
+                SessionStorage.setItem('token', token);
+                res.status(200).json({
+                    success: true,
+                    statusCode: 200,
+                    message: 'Login successful',
+                    data: result,
+                    token: token,
+                    id: result[0].username,
+                    role: result[0].role,
+                    firstname: result[0].firstname,
+                    lastname: result[0].lastname,
+                    password: result[0].password,
+                    phonenumber: result[0].phonenumber,
+                    designation: result[0].designation,
+                    department: result[0].department,
+                    created_at: result[0].created_at
+                });
+            }).catch(err=> {
+                console.log("Error while activate user", err);
+                res.status(200).json({
+                    success: false,
+                    statusCode: 500,
+                    message: 'Error while activate user',
+                    data: err
+                });
+            })
+        }).catch(err => {
+            console.log("Error while login", err);
+            res.status(200).json({
                 success: false,
-                statusCode: 404,
-                message: 'Invalid username or password',
-                data: null
+                statusCode: 500,
+                message: 'Error while login',
+                data: err
             });
-        }
-        console.log("Login successful");
-        var token = jwt.sign({
-            id: result[0].username
-        }, config.database.securitykey, {
-            expiresIn: '24h'
-        });
-        console.log("token is:", token);
-        SessionStorage.setItem('token', token);
-        res.status(200).json({
-            success: true,
-            statusCode: 200,
-            message: 'Login successful',
-            data: result,
-            token: token,
-            id: result[0].username,
-            role: result[0].role,
-            firstname: result[0].firstname,
-            lastname: result[0].lastname,
-            password: result[0].password,
-            phonenumber: result[0].phonenumber,
-            designation: result[0].designation,
-            department: result[0].department,
-            created_at: result[0].created_at
-        });
-    }).catch(err => {
-        console.log("Error while login", err);
-        res.status(200).json({
-            success: false,
-            statusCode: 500,
-            message: 'Error while login',
-            data: err
-        });
-    })
+        })
+    })();
 }
 
 // user Signup API
@@ -361,6 +382,52 @@ module.exports.changePassword = (req, res, next) => {
     })
 }
 
-module.exports.oauthVerification = (req, res, next) => {
+// Block or unbloce user api
+module.exports.changeUserStatus = (req, res, next) => {
+
+    console.log(req.body);
     
+    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id}`, req.body).then(resp => {
+        console.log('User status changed successful');
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'User status changed successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log('Error while updating user status', err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while updating user status',
+            data: null
+        });
+    })
+}
+
+// User sign out api
+module.exports.userLogout = (req, res, next) => {
+
+    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id}`, { status: 'Inactive' }).then(resp => {
+        console.log('User signout successful');
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'User signout successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log('Error while signout user', err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while signout user',
+            data: null
+        });
+    })
+}
+
+module.exports.oauthVerification = (req, res, next) => {
+
 }

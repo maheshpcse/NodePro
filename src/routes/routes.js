@@ -61,7 +61,11 @@ router.post('/uploadsingle', authCtrl.uploadSingle);
 
 router.post('/uploadmultiple', authCtrl.uploadMultiple);
 
+router.post('/logout', authCtrl.userLogout);
+
 router.get('/getUsers', userCtrl.getUsers);
+
+router.post('/updateuserstatus', authCtrl.changeUserStatus);
 
 // router.post('/getoneuser', userCtrl.getOneUserById);
 
