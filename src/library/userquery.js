@@ -246,6 +246,17 @@ let transactingTable = function (tableName1, tableName2, data) {
     })();
 }
 
+let filterTable = function (tableName, columns, limit, offset) {
+    return new Promise((resolve, reject) => {
+        let mod = knex.knex.select(columns).from(tableName).limit(limit).offset(offset)
+        mod.then(result => {
+            resolve(result);
+        }).catch(error => {
+            reject(error);
+        })
+    }) 
+}
+
 // let startTransactingTable = function (tableName, data) {
 //     const trx = await tableName.startTrasaction();
 //     let mod;
@@ -290,5 +301,6 @@ module.exports = {
     onInTable,
     havingTable,
     transactingTable,
+    filterTable,
     // startTransactingTable
 }

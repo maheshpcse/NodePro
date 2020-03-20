@@ -97,7 +97,7 @@ router.get('/getHavingData', authCtrl.validateLogin, userCtrl.getHavingData);
 
 router.post('/postData', authCtrl.validateLogin, userCtrl.addDataTransaction);
 
-router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasks);
+router.get('/getTasks', taskCtrl.getTasks);
 
 // router.get('/getTasks', authCtrl.validateLogin, taskCtrl.getTasksByJoin);
 
@@ -110,6 +110,8 @@ router.post('/updateTask', authCtrl.validateLogin, taskCtrl.updateTask);
 router.post('/updateTaskById', authCtrl.validateLogin, taskCtrl.updateTaskById);
 
 router.post('/deleteTask', authCtrl.validateLogin, taskCtrl.deleteTask);
+
+router.get('/gettasksbyfilter', taskCtrl.getTasksByFilter);
 
 router.post('/sendNotification', authCtrl.validateLogin, userCtrl.sendNotification);
 

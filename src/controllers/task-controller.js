@@ -6,9 +6,16 @@ var tasks = require('../models/Task.js');
 module.exports.getTasks = (req, res, next) => {
 
     (async () => {
-        await userquery.simpleselect('tasks', '*').then(async resp => {
+        var offset = 0;
+        var limit = 5;
+        console.log(req.query);
+        if (req.query && req.query.offset && req.query.limit) {
+            offset = parseInt(req.query.offset, 10);
+            limit = parseInt(req.query.limit, 10);
+        }
+        await userquery.filterTable('tasks', '*', limit, offset).then(async resp => {
 
-            // console.log("response is:", resp);
+            console.log("response is:", resp);
 
             await userquery.simpleselect('users', '*').then(result => {
 
@@ -28,6 +35,19 @@ module.exports.getTasks = (req, res, next) => {
                         is_complete: resp[i].is_complete,
                         user_id: resp[i].user_id,
                         username: result[pos].username,
+                        firstname: result[pos].firstname,
+                        lastname: result[pos].lastname,
+                        email: result[pos].email,
+                        password: result[pos].password,
+                        phonenumber: result[pos].phonenumber,
+                        role: result[pos].role,
+                        assigned_roles: result[pos].assigned_roles,
+                        designation: result[pos].designation,
+                        department: result[pos].department,
+                        profilePath: result[pos].profilePath,
+                        status: result[pos].status,
+                        configure: result[pos].configure,
+                        created_on: result[pos].created_at,
                         created_at: resp[i].created_at,
                         updated_at: resp[i].updated_at
                     }
@@ -210,5 +230,31 @@ module.exports.addTaskByTrans = (req, res, next) => {
             });
         }
         
+    })();
+}
+
+// GET user tasks by Filter
+module.exports.getTasksByFilter = (req, res, next) => {
+
+    (async () => {
+        var offset = 0;
+        var limit = 0;
+        console.log(req.query);
+        if (req.query && req.query.offset && req.query.limit) {
+            offset = parseInt(req.query.offset, 10);
+            limit = parseInt(req.query.limit, 10);
+        }
+        await userquery.filterTable('tasks', '*', limit, offset).then(resp=>{
+            console.log("Task filtering successful");
+            res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Task filtering successful',
+                data: resp
+            });
+        }).catch(err => {
+            console.log("Error while filtering tasks", err);
+            res.status(200).send(err);
+        })
     })();
 }
