@@ -10,6 +10,8 @@ var userCtrl = require('../controllers/user-controller.js');
 var taskCtrl = require('../controllers/task-controller.js');
 var notifyCtrl = require('../controllers/notifications-controller.js');
 var configCtrl = require('../controllers/configurations-controller.js');
+var projectCtrl = require('../controllers/project-controller.js');
+var inboxCtrl = require('../controllers/inbox.controller.js');
 
 // Server routes
 router.get('/server', (req, res, next) => {
@@ -56,6 +58,8 @@ router.post('/validateuser', authCtrl.validateUser);
 router.post('/forgotpassword', authCtrl.forgotPassword);
 
 router.post('/changepassword', authCtrl.changePassword);
+
+router.post('/changeusername', authCtrl.changeUsername);
 
 router.post('/uploadsingle', authCtrl.uploadSingle);
 
@@ -132,5 +136,27 @@ router.post('/updateConfigurations', configCtrl.updateConfigurations);
 router.get('/getConfigurations', configCtrl.getConfigurations);
 
 router.get('/addTaskByTrans', taskCtrl.addTaskByTrans);
+
+// project routes
+
+router.get('/getProjects', projectCtrl.getProjects);
+
+router.post('/addProject', projectCtrl.addProject);
+
+// inbox routes
+
+router.post('/sendMessage', inboxCtrl.sendMessage);
+
+router.post('/sendDraftMessage', inboxCtrl.sendDraftMessage);
+
+router.get('/receiveMessages', inboxCtrl.receiveMessages);
+
+router.post('/addRemoveStar', inboxCtrl.addRemoveStar);
+
+router.post('/markImportant', inboxCtrl.markImportant);
+
+router.post('/deleteMessage', inboxCtrl.deleteMessage);
+
+router.post('/markAsRead', inboxCtrl.markAsReadUnread);
 
 module.exports = router;

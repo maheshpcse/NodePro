@@ -354,7 +354,7 @@ module.exports.changePassword = (req, res, next) => {
         user_id: req.body.user_id,
         password: req.body.password
     }
-    userquery.insertOrUpdate(users, columndata).then(resp => {
+    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id}`, columndata).then(resp => {
         if (resp == '' || resp == []) {
             console.log("Invalid username or pasword");
             return res.status(200).json({
@@ -378,6 +378,30 @@ module.exports.changePassword = (req, res, next) => {
             statusCode: 500,
             message: 'Error while changing password',
             data: err
+        });
+    })
+}
+
+// Change Username API
+module.exports.changeUsername = (req, res, next) => {
+
+    console.log(req.body);
+    
+    userquery.updateTableWithWhere('users', `user_id=${req.body.user_id}`, req.body).then(resp => {
+        console.log('Username changed successful');
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Username changed successful',
+            data: resp
+        });
+    }).catch(err => {
+        console.log('Error while updating username', err);
+        res.status(200).json({
+            success: false,
+            statusCode: 500,
+            message: 'Error while updating username',
+            data: null
         });
     })
 }
