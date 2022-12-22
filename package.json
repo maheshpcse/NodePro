@@ -59,7 +59,7 @@
     "fs": "0.0.1-security",
     "google-translate-api": "^2.3.0",
     "image-to-base64": "^2.0.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "knex": "^0.20.15",
     "knex-db-manager": "^0.5.0",
     "multer": "^1.4.2",
